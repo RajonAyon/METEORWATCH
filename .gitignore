@@ -9,3 +9,5 @@ node_modules/
 # Ignore compiled Python files
 *.pyc
 __pycache__/
+
+a.out
