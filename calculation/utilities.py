@@ -13,7 +13,7 @@ import os
 
 
 # Path to raster on the server
-raster_path = "data/ppp_2020_1km_Aggregated.tif"
+raster_path = "data/ppp_2020_5km_Aggregated.tif"
 
 
 
@@ -79,64 +79,10 @@ def is_on_land(lat, lon):
 import rasterio
 import numpy as np
 
-# Path to your GMTED2010 global DEM
-DEM_FILE = r"data\merged_mean_30arcsec.tif"  # <- update this
-
-def get_elevation(lat, lon):
-    """
-    Returns the elevation (meters) at a given latitude and longitude
-    using the global GMTED2010 DEM.
-    """
-    with rasterio.open(DEM_FILE) as src:
-        # Convert lat/lon to row/col
-        row, col = src.index(lon, lat)
-        # Read the pixel value (elevation)
-        elevation = src.read(1)[row, col]
-        # Mask no-data
-        if elevation == src.nodata:
-            return np.nan
-        return elevation
 
 
 
-def calculate_crater_scientific(radius, density, velocity, angle, lat, lon, g=9.81):
-    if is_on_land(lat,lon):
-        density=2700
-    else:
-        density=1000
-    """
-    radius: impactor radius (m)
-    density: impactor density (kg/m³)
-    velocity: impactor velocity (km/s)
-    angle: impact angle (degrees from horizontal)
-    target_density: density of target rock (kg/m³)
-    g: gravity (m/s²)
-    """
-    # Convert velocity to m/s
-    v = velocity * 1000
 
-    # Empirical constants (Holsapple 1993)
-    k = 1.161
-    mu = 0.22
-
-    # Impact angle in radians
-    theta = math.radians(angle)
-
-    # Gravity-dominated crater radius (meters)
-    R_c = k * (density / target_density)**0.333 * radius**0.78 * v**0.44 * g**-0.22 * (math.sin(theta))**(1/3)
-
-    # Crater depth
-    crater_depth = 0.2 * R_c * 2  # simple crater, depth ~ 20% of diameter
-
-    # Impact energy (kinetic)
-    mass = (4/3) * math.pi * radius**3 * density
-    energy = 0.5 * mass * v**2
-
-    return R_c, crater_depth, energy
-
-
-from shapely.geometry import Point
-import geopandas as gpd
 
 # Load datasets
 land_gdf = gpd.read_file("data/ne_10m_land.shp")
