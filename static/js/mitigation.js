@@ -123,7 +123,7 @@ import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.153.0/exampl
       const approaches = asteroidData.close_approach_data
         .filter(a => {
           const year = new Date(a.close_approach_date).getFullYear();
-          return year >= 2025 && year <= 2100;
+          return year >= 2025 && year <= 2036;
         })
         .sort((a, b) => new Date(a.close_approach_date) - new Date(b.close_approach_date))
         .slice(0, 10);

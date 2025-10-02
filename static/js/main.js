@@ -658,8 +658,9 @@ function jumpToCloseApproach(direction) {
   const approaches = focusedAsteroid.close_approach_data
     .filter(a => {
       const year = new Date(a.close_approach_date).getFullYear();
-      return year >= 2025 && year <= 2100;
+      return year >= 2025 && year <= 2036;
     })
+  
     .sort((a, b) => new Date(a.close_approach_date) - new Date(b.close_approach_date));
 
   if (approaches.length === 0) return;
@@ -1045,7 +1046,7 @@ window.addEventListener("click", (event) => {
           if (asteroid.close_approach_data && asteroid.close_approach_data.length > 0) {
             const validApproaches = asteroid.close_approach_data.filter(a => {
               const year = new Date(a.close_approach_date).getFullYear();
-              return year >= 2025 && year <= 2100;
+              return year >= 2025 && year <= 2036;
             }).sort((a, b) => new Date(a.close_approach_date) - new Date(b.close_approach_date));
             
             if (validApproaches.length > 0) {
@@ -1096,7 +1097,7 @@ function animate() {
   if (playing) {
     for (let i = 0; i < speed; i++) {
       currentDate.setDate(currentDate.getDate() + 1);
-      if (currentDate.getFullYear() > 2100) currentDate = new Date(2025, 0, 1);
+      if (currentDate.getFullYear() > 2036) currentDate = new Date(2025, 0, 1);
       updateAll();
     }
   } else {
