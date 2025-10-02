@@ -1,0 +1,11 @@
+my_env/
+
+# Ignore Node modules (if using Node.js)
+node_modules/
+
+# Ignore history or backup folders
+.history/
+
+# Ignore compiled Python files
+*.pyc
+__pycache__/

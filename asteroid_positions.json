@@ -1,0 +1,2072 @@
+{
+  "2152664": {
+    "name": "152664 (1998 FW4)",
+    "elements": {
+      "orbit_id": "145",
+      "orbit_determination_date": "2025-09-25 06:56:32",
+      "first_observation_date": "1994-03-09",
+      "last_observation_date": "2025-09-24",
+      "data_arc_in_days": 11522,
+      "observations_used": 844,
+      "orbit_uncertainty": "0",
+      "minimum_orbit_intersection": ".0150763",
+      "jupiter_tisserand_invariant": "3.038",
+      "epoch_osculation": "2461000.5",
+      "eccentricity": ".7139855089950079",
+      "semi_major_axis": "2.520166362817761",
+      "inclination": "3.41335569360423",
+      "ascending_node_longitude": "353.5342049260832",
+      "orbital_period": "1461.309618404304",
+      "perihelion_distance": ".7208040995092243",
+      "perihelion_argument": "85.60700348727447",
+      "aphelion_distance": "4.319528626126298",
+      "perihelion_time": "2460991.349045053641",
+      "mean_anomaly": "2.254377675476193",
+      "mean_motion": ".2463543628715088",
+      "equinox": "J2000",
+      "orbit_class": {
+        "orbit_class_type": "APO",
+        "orbit_class_description": "Near-Earth asteroid orbits which cross the Earth\u2019s orbit similar to that of 1862 Apollo",
+        "orbit_class_range": "a (semi-major axis) > 1.0 AU; q (perihelion) < 1.017 AU"
+      }
+    },
+    "positions": [
+      {
+        "time_jd": 2460945.5,
+        "x": 167816160.93599355,
+        "y": -8251190.726149269,
+        "z": 638145.1572488288
+      },
+      {
+        "time_jd": 2460946.5,
+        "x": 166288023.2928477,
+        "y": -5630841.74954308,
+        "z": 783177.5116779414
+      }
+    ]
+  },
+  "2418198": {
+    "name": "418198 (2008 CN70)",
+    "elements": {
+      "orbit_id": "40",
+      "orbit_determination_date": "2023-02-24 06:13:10",
+      "first_observation_date": "2008-02-09",
+      "last_observation_date": "2023-02-01",
+      "data_arc_in_days": 5471,
+      "observations_used": 379,
+      "orbit_uncertainty": "0",
+      "minimum_orbit_intersection": ".0906357",
+      "jupiter_tisserand_invariant": "6.791",
+      "epoch_osculation": "2461000.5",
+      "eccentricity": ".3796729661626643",
+      "semi_major_axis": ".8517169870067945",
+      "inclination": "24.45475590651814",
+      "ascending_node_longitude": "150.6744999090289",
+      "orbital_period": "287.1054195234245",
+      "perihelion_distance": ".5283430722187974",
+      "perihelion_argument": "114.3735381702222",
+      "aphelion_distance": "1.175090901794792",
+      "perihelion_time": "2460901.726642756897",
+      "mean_anomaly": "123.8514015741736",
+      "mean_motion": "1.253894825801531",
+      "equinox": "J2000",
+      "orbit_class": {
+        "orbit_class_type": "ATE",
+        "orbit_class_description": "Near-Earth asteroid orbits similar to that of 2062 Aten",
+        "orbit_class_range": "a (semi-major axis) < 1.0 AU; q (perihelion) > 0.983 AU"
+      }
+    },
+    "positions": [
+      {
+        "time_jd": 2460945.5,
+        "x": 36967882.143377386,
+        "y": -70576495.1831372,
+        "z": 19749167.776682205
+      },
+      {
+        "time_jd": 2460946.5,
+        "x": 40674093.112926036,
+        "y": -69561090.54255155,
+        "z": 18521064.89888571
+      }
+    ]
+  },
+  "54214066": {
+    "name": "(2021 UK6)",
+    "elements": {
+      "orbit_id": "2",
+      "orbit_determination_date": "2021-11-10 08:24:29",
+      "first_observation_date": "2021-10-29",
+      "last_observation_date": "2021-11-09",
+      "data_arc_in_days": 11,
+      "observations_used": 17,
+      "orbit_uncertainty": "7",
+      "minimum_orbit_intersection": ".0659076",
+      "jupiter_tisserand_invariant": "6.714",
+      "epoch_osculation": "2461000.5",
+      "eccentricity": ".2652492530816503",
+      "semi_major_axis": ".8773339856794785",
+      "inclination": "8.660653235572241",
+      "ascending_node_longitude": "24.89740345889185",
+      "orbital_period": "300.1551895995672",
+      "perihelion_distance": ".6446218012748496",
+      "perihelion_argument": "194.8584497073015",
+      "aphelion_distance": "1.110046170084107",
+      "perihelion_time": "2460868.822489546073",
+      "mean_anomaly": "157.9313148863244",
+      "mean_motion": "1.199379562553194",
+      "equinox": "J2000",
+      "orbit_class": {
+        "orbit_class_type": "ATE",
+        "orbit_class_description": "Near-Earth asteroid orbits similar to that of 2062 Aten",
+        "orbit_class_range": "a (semi-major axis) < 1.0 AU; q (perihelion) > 0.983 AU"
+      }
+    },
+    "positions": [
+      {
+        "time_jd": 2460945.5,
+        "x": 112667090.59948719,
+        "y": -69030497.39135972,
+        "z": -16762263.656068636
+      },
+      {
+        "time_jd": 2460946.5,
+        "x": 114632285.39156675,
+        "y": -67184102.61193651,
+        "z": -16633179.601560324
+      }
+    ]
+  },
+  "54248647": {
+    "name": "(2022 DO4)",
+    "elements": {
+      "orbit_id": "4",
+      "orbit_determination_date": "2022-03-10 04:52:00",
+      "first_observation_date": "2022-02-28",
+      "last_observation_date": "2022-03-05",
+      "data_arc_in_days": 5,
+      "observations_used": 32,
+      "orbit_uncertainty": "6",
+      "minimum_orbit_intersection": ".00681833",
+      "jupiter_tisserand_invariant": "5.824",
+      "epoch_osculation": "2461000.5",
+      "eccentricity": ".2570983991354699",
+      "semi_major_axis": "1.043827927297489",
+      "inclination": "14.33480085670169",
+      "ascending_node_longitude": "163.208492838763",
+      "orbital_period": "389.5307930040864",
+      "perihelion_distance": ".7754614382164086",
+      "perihelion_argument": "96.21190566115388",
+      "aphelion_distance": "1.312194416378569",
+      "perihelion_time": "2460883.252106620587",
+      "mean_anomaly": "108.3591910438407",
+      "mean_motion": ".9241888098849822",
+      "equinox": "J2000",
+      "orbit_class": {
+        "orbit_class_type": "APO",
+        "orbit_class_description": "Near-Earth asteroid orbits which cross the Earth\u2019s orbit similar to that of 1862 Apollo",
+        "orbit_class_range": "a (semi-major axis) > 1.0 AU; q (perihelion) < 1.017 AU"
+      }
+    },
+    "positions": [
+      {
+        "time_jd": 2460945.5,
+        "x": 74251080.46686855,
+        "y": -97668682.67792861,
+        "z": 18412932.22582982
+      },
+      {
+        "time_jd": 2460946.5,
+        "x": 76969435.04922903,
+        "y": -96285062.51921944,
+        "z": 17873752.5358464
+      }
+    ]
+  },
+  "54305651": {
+    "name": "(2022 SK4)",
+    "elements": {
+      "orbit_id": "3",
+      "orbit_determination_date": "2022-09-21 15:37:30",
+      "first_observation_date": "2022-09-20",
+      "last_observation_date": "2022-09-21",
+      "data_arc_in_days": 1,
+      "observations_used": 18,
+      "orbit_uncertainty": "5",
+      "minimum_orbit_intersection": ".000510552",
+      "jupiter_tisserand_invariant": "6.943",
+      "epoch_osculation": "2461000.5",
+      "eccentricity": ".3086747414727242",
+      "semi_major_axis": ".8385028903205816",
+      "inclination": "15.17706467013225",
+      "ascending_node_longitude": "176.574972169322",
+      "orbital_period": "280.449889228265",
+      "perihelion_distance": ".579678227426744",
+      "perihelion_argument": "37.58884150220658",
+      "aphelion_distance": "1.097327553214419",
+      "perihelion_time": "2460873.678899742041",
+      "mean_anomaly": "162.7941313098724",
+      "mean_motion": "1.283651781751952",
+      "equinox": "J2000",
+      "orbit_class": {
+        "orbit_class_type": "ATE",
+        "orbit_class_description": "Near-Earth asteroid orbits similar to that of 2062 Aten",
+        "orbit_class_range": "a (semi-major axis) < 1.0 AU; q (perihelion) > 0.983 AU"
+      }
+    },
+    "positions": [
+      {
+        "time_jd": 2460945.5,
+        "x": 110323798.66242832,
+        "y": -66358111.85918269,
+        "z": 16180522.059487186
+      },
+      {
+        "time_jd": 2460946.5,
+        "x": 112367028.78074473,
+        "y": -64654018.150477014,
+        "z": 15685975.597240418
+      }
+    ]
+  },
+  "54308051": {
+    "name": "(2022 SL11)",
+    "elements": {
+      "orbit_id": "1",
+      "orbit_determination_date": "2022-09-26 23:42:46",
+      "first_observation_date": "2022-09-25",
+      "last_observation_date": "2022-09-27",
+      "data_arc_in_days": 2,
+      "observations_used": 21,
+      "orbit_uncertainty": "8",
+      "minimum_orbit_intersection": ".0992724",
+      "jupiter_tisserand_invariant": "4.884",
+      "epoch_osculation": "2459847.5",
+      "eccentricity": ".1809960447814946",
+      "semi_major_axis": "1.307040797469697",
+      "inclination": "23.62974920333563",
+      "ascending_node_longitude": "184.363180387133",
+      "orbital_period": "545.7982544726641",
+      "perihelion_distance": "1.070471582759631",
+      "perihelion_argument": "216.468946786895",
+      "aphelion_distance": "1.543610012179762",
+      "perihelion_time": "2459890.566487897505",
+      "mean_anomaly": "331.5940175402699",
+      "mean_motion": ".6595843739878254",
+      "equinox": "J2000",
+      "orbit_class": {
+        "orbit_class_type": "AMO",
+        "orbit_class_description": "Near-Earth asteroid orbits similar to that of 1221 Amor",
+        "orbit_class_range": "1.017 AU < q (perihelion) < 1.3 AU"
+      }
+    },
+    "positions": [
+      {
+        "time_jd": 2460945.5,
+        "x": 153948819.1692987,
+        "y": 47943987.88427165,
+        "z": -15790912.529481012
+      },
+      {
+        "time_jd": 2460946.5,
+        "x": 152952512.41922483,
+        "y": 50209554.4811891,
+        "z": -16812404.66614836
+      }
+    ]
+  },
+  "54381677": {
+    "name": "(2023 RG5)",
+    "elements": {
+      "orbit_id": "3",
+      "orbit_determination_date": "2024-06-23 07:42:02",
+      "first_observation_date": "2022-05-01",
+      "last_observation_date": "2024-06-12",
+      "data_arc_in_days": 773,
+      "observations_used": 31,
+      "orbit_uncertainty": "1",
+      "minimum_orbit_intersection": ".23146",
+      "jupiter_tisserand_invariant": "4.253",
+      "epoch_osculation": "2461000.5",
+      "eccentricity": ".6030991207492026",
+      "semi_major_axis": "1.518202475309928",
+      "inclination": "16.6998035510466",
+      "ascending_node_longitude": "151.3574175092193",
+      "orbital_period": "683.2709704736251",
+      "perihelion_distance": ".6025758973312474",
+      "perihelion_argument": "327.3745958583926",
+      "aphelion_distance": "2.433829053288608",
+      "perihelion_time": "2460998.836534576712",
+      "mean_anomaly": ".8764422582864877",
+      "mean_motion": ".5268773525537864",
+      "equinox": "J2000",
+      "orbit_class": {
+        "orbit_class_type": "APO",
+        "orbit_class_description": "Near-Earth asteroid orbits which cross the Earth\u2019s orbit similar to that of 1862 Apollo",
+        "orbit_class_range": "a (semi-major axis) > 1.0 AU; q (perihelion) < 1.017 AU"
+      }
+    },
+    "positions": [
+      {
+        "time_jd": 2460945.5,
+        "x": 140771150.870465,
+        "y": 54482056.17165563,
+        "z": -34589055.671700925
+      },
+      {
+        "time_jd": 2460946.5,
+        "x": 138364696.7449654,
+        "y": 56125064.0413597,
+        "z": -34675587.16272348
+      }
+    ]
+  },
+  "54391018": {
+    "name": "(2023 TO1)",
+    "elements": {
+      "orbit_id": "3",
+      "orbit_determination_date": "2023-10-10 07:39:04",
+      "first_observation_date": "2023-10-05",
+      "last_observation_date": "2023-10-09",
+      "data_arc_in_days": 4,
+      "observations_used": 32,
+      "orbit_uncertainty": "8",
+      "minimum_orbit_intersection": ".0817395",
+      "jupiter_tisserand_invariant": "4.238",
+      "epoch_osculation": "2460223.5",
+      "eccentricity": ".3571872594491857",
+      "semi_major_axis": "1.576345986087048",
+      "inclination": "24.29191386760188",
+      "ascending_node_longitude": "5.779740646462348",
+      "orbital_period": "722.895871911566",
+      "perihelion_distance": "1.013295283372891",
+      "perihelion_argument": "43.14038414046999",
+      "aphelion_distance": "2.139396688801205",
+      "perihelion_time": "2460258.915492043439",
+      "mean_anomaly": "342.3631900097532",
+      "mean_motion": ".4979970338577889",
+      "equinox": "J2000",
+      "orbit_class": {
+        "orbit_class_type": "APO",
+        "orbit_class_description": "Near-Earth asteroid orbits which cross the Earth\u2019s orbit similar to that of 1862 Apollo",
+        "orbit_class_range": "a (semi-major axis) > 1.0 AU; q (perihelion) < 1.017 AU"
+      }
+    },
+    "positions": [
+      {
+        "time_jd": 2460945.5,
+        "x": 133273401.90310875,
+        "y": 71932697.33287312,
+        "z": 26243950.793448277
+      },
+      {
+        "time_jd": 2460946.5,
+        "x": 131580126.37115957,
+        "y": 74106188.40557632,
+        "z": 27296927.33641334
+      }
+    ]
+  },
+  "54539479": {
+    "name": "(2025 OS12)",
+    "elements": {
+      "orbit_id": "1",
+      "orbit_determination_date": "2025-08-01 15:42:09",
+      "first_observation_date": "2025-07-25",
+      "last_observation_date": "2025-08-01",
+      "data_arc_in_days": 7,
+      "observations_used": 14,
+      "orbit_uncertainty": "8",
+      "minimum_orbit_intersection": ".0815076",
+      "jupiter_tisserand_invariant": "3.446",
+      "epoch_osculation": "2460885.5",
+      "eccentricity": ".5276448169647651",
+      "semi_major_axis": "2.219634109479166",
+      "inclination": "6.651988164116458",
+      "ascending_node_longitude": "291.5820483234193",
+      "orbital_period": "1207.870882179567",
+      "perihelion_distance": "1.048455676054282",
+      "perihelion_argument": "48.66113179592567",
+      "aphelion_distance": "3.39081254290405",
+      "perihelion_time": "2460931.418415456595",
+      "mean_anomaly": "346.3142411922827",
+      "mean_motion": ".298045101766499",
+      "equinox": "J2000",
+      "orbit_class": {
+        "orbit_class_type": "AMO",
+        "orbit_class_description": "Near-Earth asteroid orbits similar to that of 1221 Amor",
+        "orbit_class_range": "1.017 AU < q (perihelion) < 1.3 AU"
+      }
+    },
+    "positions": [
+      {
+        "time_jd": 2460945.5,
+        "x": 153723742.57272428,
+        "y": 88583349.3280013,
+        "z": 20470972.87819113
+      },
+      {
+        "time_jd": 2460946.5,
+        "x": 153057002.05026293,
+        "y": 91347116.72769158,
+        "z": 20517226.82250687
+      }
+    ]
+  },
+  "54539493": {
+    "name": "(2025 OD13)",
+    "elements": {
+      "orbit_id": "22",
+      "orbit_determination_date": "2025-09-25 06:55:05",
+      "first_observation_date": "2025-07-28",
+      "last_observation_date": "2025-09-24",
+      "data_arc_in_days": 58,
+      "observations_used": 208,
+      "orbit_uncertainty": "5",
+      "minimum_orbit_intersection": ".0521481",
+      "jupiter_tisserand_invariant": "4.073",
+      "epoch_osculation": "2461000.5",
+      "eccentricity": ".4460727347157962",
+      "semi_major_axis": "1.69451872239272",
+      "inclination": "11.14694002489028",
+      "ascending_node_longitude": "174.3040153825551",
+      "orbital_period": "805.6900203746903",
+      "perihelion_distance": ".938640121867882",
+      "perihelion_argument": "237.5969663497502",
+      "aphelion_distance": "2.450397322917557",
+      "perihelion_time": "2460985.312998483553",
+      "mean_anomaly": "6.785885896139413",
+      "mean_motion": ".4468219673772056",
+      "equinox": "J2000",
+      "orbit_class": {
+        "orbit_class_type": "APO",
+        "orbit_class_description": "Near-Earth asteroid orbits which cross the Earth\u2019s orbit similar to that of 1862 Apollo",
+        "orbit_class_range": "a (semi-major axis) > 1.0 AU; q (perihelion) < 1.017 AU"
+      }
+    },
+    "positions": [
+      {
+        "time_jd": 2460945.5,
+        "x": 163383525.56330475,
+        "y": -17820059.12819943,
+        "z": 298767.7926670047
+      },
+      {
+        "time_jd": 2460946.5,
+        "x": 162824606.21743062,
+        "y": -15065821.860679338,
+        "z": -230325.62888152208
+      }
+    ]
+  },
+  "54545420": {
+    "name": "(2025 RH4)",
+    "elements": {
+      "orbit_id": "3",
+      "orbit_determination_date": "2025-09-24 07:54:22",
+      "first_observation_date": "2025-09-14",
+      "last_observation_date": "2025-09-24",
+      "data_arc_in_days": 10,
+      "observations_used": 17,
+      "orbit_uncertainty": "9",
+      "minimum_orbit_intersection": ".0133056",
+      "jupiter_tisserand_invariant": "3.071",
+      "epoch_osculation": "2460935.5",
+      "eccentricity": ".6918192469075779",
+      "semi_major_axis": "2.469229579806886",
+      "inclination": "14.44620462618749",
+      "ascending_node_longitude": "180.1017502445257",
+      "orbital_period": "1417.230966889671",
+      "perihelion_distance": ".7609690314629711",
+      "perihelion_argument": "249.182979613671",
+      "aphelion_distance": "4.177490128150801",
+      "perihelion_time": "2460989.052478224889",
+      "mean_anomaly": "346.3967888005789",
+      "mean_motion": ".2540164647898392",
+      "equinox": "J2000",
+      "orbit_class": {
+        "orbit_class_type": "APO",
+        "orbit_class_description": "Near-Earth asteroid orbits which cross the Earth\u2019s orbit similar to that of 1862 Apollo",
+        "orbit_class_range": "a (semi-major axis) > 1.0 AU; q (perihelion) < 1.017 AU"
+      }
+    },
+    "positions": [
+      {
+        "time_jd": 2460945.5,
+        "x": 29753217.98469127,
+        "y": 106634617.46777308,
+        "z": -27457141.582666773
+      },
+      {
+        "time_jd": 2460946.5,
+        "x": 26086624.598662384,
+        "y": 107709005.2003708,
+        "z": -27735598.19487115
+      }
+    ]
+  },
+  "54545425": {
+    "name": "(2025 RT4)",
+    "elements": {
+      "orbit_id": "2",
+      "orbit_determination_date": "2025-09-24 07:54:22",
+      "first_observation_date": "2025-09-15",
+      "last_observation_date": "2025-09-24",
+      "data_arc_in_days": 9,
+      "observations_used": 14,
+      "orbit_uncertainty": "8",
+      "minimum_orbit_intersection": ".120706",
+      "jupiter_tisserand_invariant": "3.253",
+      "epoch_osculation": "2460933.5",
+      "eccentricity": ".5463179263057932",
+      "semi_major_axis": "2.468547519756406",
+      "inclination": "7.147387038964405",
+      "ascending_node_longitude": "348.7028825429525",
+      "orbital_period": "1416.643797994382",
+      "perihelion_distance": "1.119935757775777",
+      "perihelion_argument": "16.47754204656364",
+      "aphelion_distance": "3.817159281737034",
+      "perihelion_time": "2460950.832767812621",
+      "mean_anomaly": "355.595366724241",
+      "mean_motion": ".254121749242591",
+      "equinox": "J2000",
+      "orbit_class": {
+        "orbit_class_type": "AMO",
+        "orbit_class_description": "Near-Earth asteroid orbits similar to that of 1221 Amor",
+        "orbit_class_range": "1.017 AU < q (perihelion) < 1.3 AU"
+      }
+    },
+    "positions": [
+      {
+        "time_jd": 2460945.5,
+        "x": 163591731.65306664,
+        "y": 37757470.16253903,
+        "z": 8661516.63689374
+      },
+      {
+        "time_jd": 2460946.5,
+        "x": 163028617.1084114,
+        "y": 40700157.16194752,
+        "z": 9009537.073062643
+      }
+    ]
+  },
+  "54545775": {
+    "name": "(2025 SL)",
+    "elements": {
+      "orbit_id": "4",
+      "orbit_determination_date": "2025-09-24 07:54:22",
+      "first_observation_date": "2025-09-16",
+      "last_observation_date": "2025-09-23",
+      "data_arc_in_days": 7,
+      "observations_used": 26,
+      "orbit_uncertainty": "8",
+      "minimum_orbit_intersection": ".0508",
+      "jupiter_tisserand_invariant": "4.252",
+      "epoch_osculation": "2460935.5",
+      "eccentricity": ".3801924957978409",
+      "semi_major_axis": "1.600858448010322",
+      "inclination": "12.61811777562109",
+      "ascending_node_longitude": "359.6362362523984",
+      "orbital_period": "739.8229938605944",
+      "perihelion_distance": ".9922240792422198",
+      "perihelion_argument": "42.15275537473948",
+      "aphelion_distance": "2.209492816778425",
+      "perihelion_time": "2460978.512532315541",
+      "mean_anomaly": "339.0699778702573",
+      "mean_motion": ".4866028806720695",
+      "equinox": "J2000",
+      "orbit_class": {
+        "orbit_class_type": "APO",
+        "orbit_class_description": "Near-Earth asteroid orbits which cross the Earth\u2019s orbit similar to that of 1862 Apollo",
+        "orbit_class_range": "a (semi-major axis) > 1.0 AU; q (perihelion) < 1.017 AU"
+      }
+    },
+    "positions": [
+      {
+        "time_jd": 2460945.5,
+        "x": 125868815.58624439,
+        "y": 77757661.40683214,
+        "z": 17585254.057778418
+      },
+      {
+        "time_jd": 2460946.5,
+        "x": 124116159.23262972,
+        "y": 80167529.97858159,
+        "z": 18122221.85286819
+      }
+    ]
+  },
+  "54546842": {
+    "name": "(2025 SC4)",
+    "elements": {
+      "orbit_id": "2",
+      "orbit_determination_date": "2025-09-25 06:55:13",
+      "first_observation_date": "2025-09-20",
+      "last_observation_date": "2025-09-25",
+      "data_arc_in_days": 5,
+      "observations_used": 36,
+      "orbit_uncertainty": "8",
+      "minimum_orbit_intersection": ".0407627",
+      "jupiter_tisserand_invariant": "4.339",
+      "epoch_osculation": "2460940.5",
+      "eccentricity": ".3417074927581182",
+      "semi_major_axis": "1.571626444120255",
+      "inclination": "5.336316069516508",
+      "ascending_node_longitude": "184.9015574940738",
+      "orbital_period": "719.6518038314327",
+      "perihelion_distance": "1.034589912347566",
+      "perihelion_argument": "197.7629667189978",
+      "aphelion_distance": "2.108662975892944",
+      "perihelion_time": "2460961.872342742970",
+      "mean_anomaly": "349.3086582337374",
+      "mean_motion": ".5002419198886972",
+      "equinox": "J2000",
+      "orbit_class": {
+        "orbit_class_type": "AMO",
+        "orbit_class_description": "Near-Earth asteroid orbits similar to that of 1221 Amor",
+        "orbit_class_range": "1.017 AU < q (perihelion) < 1.3 AU"
+      }
+    },
+    "positions": [
+      {
+        "time_jd": 2460945.5,
+        "x": 147886870.19626537,
+        "y": 46113285.06848628,
+        "z": -3111240.5685280226
+      },
+      {
+        "time_jd": 2460946.5,
+        "x": 146928566.68414456,
+        "y": 48868057.356449425,
+        "z": -3375261.512049745
+      }
+    ]
+  },
+  "3388395": {
+    "name": "(2007 TR68)",
+    "elements": {
+      "orbit_id": "8",
+      "orbit_determination_date": "2021-04-15 00:52:35",
+      "first_observation_date": "2007-10-12",
+      "last_observation_date": "2007-10-15",
+      "data_arc_in_days": 3,
+      "observations_used": 26,
+      "orbit_uncertainty": "7",
+      "minimum_orbit_intersection": ".0273965",
+      "jupiter_tisserand_invariant": "6.717",
+      "epoch_osculation": "2461000.5",
+      "eccentricity": ".2575503216062165",
+      "semi_major_axis": ".8760002612707576",
+      "inclination": "11.3643502568771",
+      "ascending_node_longitude": "18.06990667499448",
+      "orbital_period": "299.4710052512962",
+      "perihelion_distance": ".6503861122533443",
+      "perihelion_argument": "144.8777315443164",
+      "aphelion_distance": "1.101614410288171",
+      "perihelion_time": "2461071.773268400226",
+      "mean_anomaly": "274.3209987806651",
+      "mean_motion": "1.202119716724869",
+      "equinox": "J2000",
+      "orbit_class": {
+        "orbit_class_type": "ATE",
+        "orbit_class_description": "Near-Earth asteroid orbits similar to that of 2062 Aten",
+        "orbit_class_range": "a (semi-major axis) < 1.0 AU; q (perihelion) > 0.983 AU"
+      }
+    },
+    "positions": [
+      {
+        "time_jd": 2460945.5,
+        "x": 145764861.06218016,
+        "y": 50888245.898030296,
+        "z": 636216.5389880731
+      },
+      {
+        "time_jd": 2460946.5,
+        "x": 144604998.699365,
+        "y": 52824903.107627064,
+        "z": 1078571.2575151608
+      }
+    ]
+  },
+  "3557843": {
+    "name": "(2011 DV)",
+    "elements": {
+      "orbit_id": "42",
+      "orbit_determination_date": "2025-05-09 06:18:07",
+      "first_observation_date": "2011-02-22",
+      "last_observation_date": "2025-05-09",
+      "data_arc_in_days": 5190,
+      "observations_used": 159,
+      "orbit_uncertainty": "0",
+      "minimum_orbit_intersection": ".00368685",
+      "jupiter_tisserand_invariant": "6.278",
+      "epoch_osculation": "2461000.5",
+      "eccentricity": ".04934977708826462",
+      "semi_major_axis": ".9573162586152562",
+      "inclination": "10.59364059330429",
+      "ascending_node_longitude": "35.04435912371488",
+      "orbital_period": "342.1224544824761",
+      "perihelion_distance": ".9100729146496218",
+      "perihelion_argument": "350.5246751943026",
+      "aphelion_distance": "1.004559602580891",
+      "perihelion_time": "2460960.053814453487",
+      "mean_anomaly": "42.55969348393162",
+      "mean_motion": "1.05225481485735",
+      "equinox": "J2000",
+      "orbit_class": {
+        "orbit_class_type": "ATE",
+        "orbit_class_description": "Near-Earth asteroid orbits similar to that of 2062 Aten",
+        "orbit_class_range": "a (semi-major axis) < 1.0 AU; q (perihelion) > 0.983 AU"
+      }
+    },
+    "positions": [
+      {
+        "time_jd": 2460945.5,
+        "x": 135458364.3651015,
+        "y": 11860381.82356679,
+        "z": -12731400.8173509
+      },
+      {
+        "time_jd": 2460946.5,
+        "x": 135189353.15613407,
+        "y": 14566625.706649384,
+        "z": -12288122.45715601
+      }
+    ]
+  },
+  "3648537": {
+    "name": "(2013 ST19)",
+    "elements": {
+      "orbit_id": "13",
+      "orbit_determination_date": "2025-09-19 06:53:05",
+      "first_observation_date": "2013-09-24",
+      "last_observation_date": "2025-09-16",
+      "data_arc_in_days": 4375,
+      "observations_used": 70,
+      "orbit_uncertainty": "0",
+      "minimum_orbit_intersection": ".0743222",
+      "jupiter_tisserand_invariant": "4.551",
+      "epoch_osculation": "2461000.5",
+      "eccentricity": ".3453723280764552",
+      "semi_major_axis": "1.432925303864311",
+      "inclination": "21.04751663074201",
+      "ascending_node_longitude": "176.0852175847825",
+      "orbital_period": "626.5182911727096",
+      "perihelion_distance": ".9380325557090315",
+      "perihelion_argument": "244.035265072001",
+      "aphelion_distance": "1.927818052019589",
+      "perihelion_time": "2460999.537341229935",
+      "mean_anomaly": ".5531477087041833",
+      "mean_motion": ".5746041337853939",
+      "equinox": "J2000",
+      "orbit_class": {
+        "orbit_class_type": "APO",
+        "orbit_class_description": "Near-Earth asteroid orbits which cross the Earth\u2019s orbit similar to that of 1862 Apollo",
+        "orbit_class_range": "a (semi-major axis) > 1.0 AU; q (perihelion) < 1.017 AU"
+      }
+    },
+    "positions": [
+      {
+        "time_jd": 2460945.5,
+        "x": 162316381.3693668,
+        "y": -5621798.107613795,
+        "z": -2106134.0315380907
+      },
+      {
+        "time_jd": 2460946.5,
+        "x": 161673342.76718634,
+        "y": -3112980.0798245226,
+        "z": -3052420.1787916175
+      }
+    ]
+  },
+  "3767014": {
+    "name": "(2017 BB7)",
+    "elements": {
+      "orbit_id": "6",
+      "orbit_determination_date": "2021-04-15 18:25:03",
+      "first_observation_date": "2017-01-26",
+      "last_observation_date": "2017-01-30",
+      "data_arc_in_days": 4,
+      "observations_used": 27,
+      "orbit_uncertainty": "4",
+      "minimum_orbit_intersection": ".0073938",
+      "jupiter_tisserand_invariant": "6.363",
+      "epoch_osculation": "2461000.5",
+      "eccentricity": ".2108145375115055",
+      "semi_major_axis": ".9399368788761054",
+      "inclination": "5.748338864869321",
+      "ascending_node_longitude": "127.7582092417171",
+      "orbital_period": "332.848390620738",
+      "perihelion_distance": ".7417845204658313",
+      "perihelion_argument": "119.681896991494",
+      "aphelion_distance": "1.13808923728638",
+      "perihelion_time": "2460865.635668941304",
+      "mean_anomaly": "145.8656870492487",
+      "mean_motion": "1.081573503566072",
+      "equinox": "J2000",
+      "orbit_class": {
+        "orbit_class_type": "ATE",
+        "orbit_class_description": "Near-Earth asteroid orbits similar to that of 2062 Aten",
+        "orbit_class_range": "a (semi-major axis) < 1.0 AU; q (perihelion) > 0.983 AU"
+      }
+    },
+    "positions": [
+      {
+        "time_jd": 2460945.5,
+        "x": 130271995.13874018,
+        "y": -41392173.49670489,
+        "z": -7816426.906543937
+      },
+      {
+        "time_jd": 2460946.5,
+        "x": 131581667.64058173,
+        "y": -39021915.35192222,
+        "z": -8066762.778231721
+      }
+    ]
+  },
+  "3840718": {
+    "name": "(2019 FY1)",
+    "elements": {
+      "orbit_id": "5",
+      "orbit_determination_date": "2021-04-15 21:06:25",
+      "first_observation_date": "2019-03-29",
+      "last_observation_date": "2019-04-15",
+      "data_arc_in_days": 17,
+      "observations_used": 42,
+      "orbit_uncertainty": "7",
+      "minimum_orbit_intersection": ".0154273",
+      "jupiter_tisserand_invariant": "5.597",
+      "epoch_osculation": "2461000.5",
+      "eccentricity": ".1344472226107076",
+      "semi_major_axis": "1.111059117477832",
+      "inclination": "3.384234088574868",
+      "ascending_node_longitude": "13.60101504354937",
+      "orbital_period": "427.7639468921942",
+      "perihelion_distance": ".9616803049766336",
+      "perihelion_argument": "116.3397282311496",
+      "aphelion_distance": "1.26043792997903",
+      "perihelion_time": "2461083.501310156237",
+      "mean_anomaly": "290.147288303902",
+      "mean_motion": ".8415856516555094",
+      "equinox": "J2000",
+      "orbit_class": {
+        "orbit_class_type": "APO",
+        "orbit_class_description": "Near-Earth asteroid orbits which cross the Earth\u2019s orbit similar to that of 1862 Apollo",
+        "orbit_class_range": "a (semi-major axis) > 1.0 AU; q (perihelion) < 1.017 AU"
+      }
+    },
+    "positions": [
+      {
+        "time_jd": 2460945.5,
+        "x": 168963697.79992753,
+        "y": 40103692.05338751,
+        "z": -44607.32633707545
+      },
+      {
+        "time_jd": 2460946.5,
+        "x": 168125743.84472904,
+        "y": 42280410.03277343,
+        "z": 92155.44812817856
+      }
+    ]
+  },
+  "3869336": {
+    "name": "(2019 SF6)",
+    "elements": {
+      "orbit_id": "9",
+      "orbit_determination_date": "2023-10-04 06:35:08",
+      "first_observation_date": "2015-10-09",
+      "last_observation_date": "2023-10-04",
+      "data_arc_in_days": 2917,
+      "observations_used": 48,
+      "orbit_uncertainty": "0",
+      "minimum_orbit_intersection": ".0149583",
+      "jupiter_tisserand_invariant": "7.522",
+      "epoch_osculation": "2461000.5",
+      "eccentricity": ".4165145350142138",
+      "semi_major_axis": ".7622726125383008",
+      "inclination": "2.187600700775746",
+      "ascending_node_longitude": "200.8318400325075",
+      "orbital_period": "243.0882132569479",
+      "perihelion_distance": ".4447749897728404",
+      "perihelion_argument": "3.37930346318855",
+      "aphelion_distance": "1.079770235303761",
+      "perihelion_time": "2461094.078545980469",
+      "mean_anomaly": "221.4154256942115",
+      "mean_motion": "1.480943872911989",
+      "equinox": "J2000",
+      "orbit_class": {
+        "orbit_class_type": "ATE",
+        "orbit_class_description": "Near-Earth asteroid orbits similar to that of 2062 Aten",
+        "orbit_class_range": "a (semi-major axis) < 1.0 AU; q (perihelion) > 0.983 AU"
+      }
+    },
+    "positions": [
+      {
+        "time_jd": 2460945.5,
+        "x": 147106022.38647294,
+        "y": 66722099.69795729,
+        "z": -383734.7349690182
+      },
+      {
+        "time_jd": 2460946.5,
+        "x": 146303721.4247812,
+        "y": 68433829.18142636,
+        "z": -455746.33321069664
+      }
+    ]
+  },
+  "54054711": {
+    "name": "(2020 SR6)",
+    "elements": {
+      "orbit_id": "9",
+      "orbit_determination_date": "2021-04-15 23:03:11",
+      "first_observation_date": "2020-09-18",
+      "last_observation_date": "2020-10-12",
+      "data_arc_in_days": 24,
+      "observations_used": 71,
+      "orbit_uncertainty": "6",
+      "minimum_orbit_intersection": ".012774",
+      "jupiter_tisserand_invariant": "6.736",
+      "epoch_osculation": "2461000.5",
+      "eccentricity": ".2369787521645678",
+      "semi_major_axis": ".8760796154215522",
+      "inclination": "1.203761099780512",
+      "ascending_node_longitude": "233.6072851387039",
+      "orbital_period": "299.5116983992347",
+      "perihelion_distance": ".6684673613621382",
+      "perihelion_argument": "279.0537418871073",
+      "aphelion_distance": "1.083691869480966",
+      "perihelion_time": "2461026.118341519863",
+      "mean_anomaly": "329.2078706893861",
+      "mean_motion": "1.201956390765536",
+      "equinox": "J2000",
+      "orbit_class": {
+        "orbit_class_type": "ATE",
+        "orbit_class_description": "Near-Earth asteroid orbits similar to that of 2062 Aten",
+        "orbit_class_range": "a (semi-major axis) < 1.0 AU; q (perihelion) > 0.983 AU"
+      }
+    },
+    "positions": [
+      {
+        "time_jd": 2460945.5,
+        "x": 102323071.89567834,
+        "y": 88921448.86391836,
+        "z": 622151.1714006339
+      },
+      {
+        "time_jd": 2460946.5,
+        "x": 100139025.46342379,
+        "y": 90443683.08555856,
+        "z": 566231.013817178
+      }
+    ]
+  },
+  "54076927": {
+    "name": "(2020 UM5)",
+    "elements": {
+      "orbit_id": "3",
+      "orbit_determination_date": "2021-04-15 23:13:37",
+      "first_observation_date": "2020-10-20",
+      "last_observation_date": "2020-10-27",
+      "data_arc_in_days": 7,
+      "observations_used": 22,
+      "orbit_uncertainty": "8",
+      "minimum_orbit_intersection": ".0255153",
+      "jupiter_tisserand_invariant": "8.207",
+      "epoch_osculation": "2459145.5",
+      "eccentricity": ".5595217074384694",
+      "semi_major_axis": ".6833942142264573",
+      "inclination": "9.218119766901156",
+      "ascending_node_longitude": "33.31898278907861",
+      "orbital_period": "206.3504276808965",
+      "perihelion_distance": ".3010203166288988",
+      "perihelion_argument": "170.1866217990683",
+      "aphelion_distance": "1.065768111824016",
+      "perihelion_time": "2459236.392419032268",
+      "mean_anomaly": "201.4286259575039",
+      "mean_motion": "1.744605058714536",
+      "equinox": "J2000",
+      "orbit_class": {
+        "orbit_class_type": "ATE",
+        "orbit_class_description": "Near-Earth asteroid orbits similar to that of 2062 Aten",
+        "orbit_class_range": "a (semi-major axis) < 1.0 AU; q (perihelion) > 0.983 AU"
+      }
+    },
+    "positions": [
+      {
+        "time_jd": 2460945.5,
+        "x": 151066733.869866,
+        "y": 25864389.810977366,
+        "z": -9959360.042124642
+      },
+      {
+        "time_jd": 2460946.5,
+        "x": 151277883.18902412,
+        "y": 27623965.25216881,
+        "z": -9739561.736922853
+      }
+    ]
+  },
+  "54209492": {
+    "name": "(2021 TS15)",
+    "elements": {
+      "orbit_id": "3",
+      "orbit_determination_date": "2021-10-28 05:58:51",
+      "first_observation_date": "2021-10-14",
+      "last_observation_date": "2021-10-28",
+      "data_arc_in_days": 14,
+      "observations_used": 20,
+      "orbit_uncertainty": "7",
+      "minimum_orbit_intersection": ".00689384",
+      "jupiter_tisserand_invariant": "6.807",
+      "epoch_osculation": "2461000.5",
+      "eccentricity": ".1920743609588189",
+      "semi_major_axis": ".8662419528139527",
+      "inclination": "1.257805647129566",
+      "ascending_node_longitude": "56.1609837986616",
+      "orbital_period": "294.4809778723172",
+      "perihelion_distance": ".6998590832914934",
+      "perihelion_argument": "161.6124459232782",
+      "aphelion_distance": "1.032624822336412",
+      "perihelion_time": "2461146.353431498535",
+      "mean_anomaly": "181.6956636084009",
+      "mean_motion": "1.222489828039389",
+      "equinox": "J2000",
+      "orbit_class": {
+        "orbit_class_type": "ATE",
+        "orbit_class_description": "Near-Earth asteroid orbits similar to that of 2062 Aten",
+        "orbit_class_range": "a (semi-major axis) < 1.0 AU; q (perihelion) > 0.983 AU"
+      }
+    },
+    "positions": [
+      {
+        "time_jd": 2460945.5,
+        "x": 141730731.45411018,
+        "y": -23027251.08528158,
+        "z": -2866301.9663299695
+      },
+      {
+        "time_jd": 2460946.5,
+        "x": 142490741.7428986,
+        "y": -20670475.68355379,
+        "z": -2851346.8532805457
+      }
+    ]
+  },
+  "54293660": {
+    "name": "(2022 PX)",
+    "elements": {
+      "orbit_id": "3",
+      "orbit_determination_date": "2022-08-15 05:48:48",
+      "first_observation_date": "2022-08-05",
+      "last_observation_date": "2022-08-15",
+      "data_arc_in_days": 10,
+      "observations_used": 85,
+      "orbit_uncertainty": "6",
+      "minimum_orbit_intersection": ".00794139",
+      "jupiter_tisserand_invariant": "7.166",
+      "epoch_osculation": "2461000.5",
+      "eccentricity": ".3430864587323229",
+      "semi_major_axis": ".8063598496880167",
+      "inclination": "15.22087232681335",
+      "ascending_node_longitude": "134.0033383490637",
+      "orbital_period": "264.4793505049497",
+      "perihelion_distance": ".5297087043946268",
+      "perihelion_argument": "26.65806421258151",
+      "aphelion_distance": "1.083010994981406",
+      "perihelion_time": "2461024.102575937636",
+      "mean_anomaly": "327.8730028589131",
+      "mean_motion": "1.361164867172731",
+      "equinox": "J2000",
+      "orbit_class": {
+        "orbit_class_type": "ATE",
+        "orbit_class_description": "Near-Earth asteroid orbits similar to that of 2062 Aten",
+        "orbit_class_range": "a (semi-major axis) < 1.0 AU; q (perihelion) > 0.983 AU"
+      }
+    },
+    "positions": [
+      {
+        "time_jd": 2460945.5,
+        "x": 107677854.31971964,
+        "y": 71607452.4269504,
+        "z": -34608782.71023822
+      },
+      {
+        "time_jd": 2460946.5,
+        "x": 105613959.67689545,
+        "y": 73144561.59758894,
+        "z": -34495397.22703453
+      }
+    ]
+  },
+  "54312925": {
+    "name": "(2022 SU55)",
+    "elements": {
+      "orbit_id": "2",
+      "orbit_determination_date": "2023-09-14 06:49:52",
+      "first_observation_date": "2022-09-26",
+      "last_observation_date": "2022-10-02",
+      "data_arc_in_days": 6,
+      "observations_used": 13,
+      "orbit_uncertainty": "8",
+      "minimum_orbit_intersection": ".0743532",
+      "jupiter_tisserand_invariant": "4.893",
+      "epoch_osculation": "2459851.5",
+      "eccentricity": ".1939352044889965",
+      "semi_major_axis": "1.315039950617075",
+      "inclination": "18.32419872549383",
+      "ascending_node_longitude": "182.2780789223888",
+      "orbital_period": "550.816380477648",
+      "perihelion_distance": "1.060007408882953",
+      "perihelion_argument": "206.5883492416742",
+      "aphelion_distance": "1.570072492351198",
+      "perihelion_time": "2459873.544418689626",
+      "mean_anomaly": "345.5923116858225",
+      "mean_motion": ".6535753342843963",
+      "equinox": "J2000",
+      "orbit_class": {
+        "orbit_class_type": "AMO",
+        "orbit_class_description": "Near-Earth asteroid orbits similar to that of 1221 Amor",
+        "orbit_class_range": "1.017 AU < q (perihelion) < 1.3 AU"
+      }
+    },
+    "positions": [
+      {
+        "time_jd": 2460945.5,
+        "x": 159255273.24409777,
+        "y": 19015395.451612514,
+        "z": -4196155.41928137
+      },
+      {
+        "time_jd": 2460946.5,
+        "x": 158746642.27569082,
+        "y": 21536127.855818097,
+        "z": -5037025.282087533
+      }
+    ]
+  },
+  "54360101": {
+    "name": "(2023 KJ4)",
+    "elements": {
+      "orbit_id": "4",
+      "orbit_determination_date": "2024-06-08 06:20:05",
+      "first_observation_date": "2023-05-27",
+      "last_observation_date": "2023-06-13",
+      "data_arc_in_days": 17,
+      "observations_used": 19,
+      "orbit_uncertainty": "7",
+      "minimum_orbit_intersection": ".00323976",
+      "jupiter_tisserand_invariant": "6.273",
+      "epoch_osculation": "2461000.5",
+      "eccentricity": ".2335246913367913",
+      "semi_major_axis": ".9516116798027077",
+      "inclination": "14.51903655640209",
+      "ascending_node_longitude": "239.6234698227429",
+      "orbital_period": "339.06898996159",
+      "perihelion_distance": ".7293868560042949",
+      "perihelion_argument": "240.1846674367543",
+      "aphelion_distance": "1.17383650360112",
+      "perihelion_time": "2461013.161361542116",
+      "mean_anomaly": "346.5570421061567",
+      "mean_motion": "1.061730829589521",
+      "equinox": "J2000",
+      "orbit_class": {
+        "orbit_class_type": "ATE",
+        "orbit_class_description": "Near-Earth asteroid orbits similar to that of 2062 Aten",
+        "orbit_class_range": "a (semi-major axis) < 1.0 AU; q (perihelion) > 0.983 AU"
+      }
+    },
+    "positions": [
+      {
+        "time_jd": 2460945.5,
+        "x": 120008416.29894316,
+        "y": 62126268.215111814,
+        "z": 18676478.980427563
+      },
+      {
+        "time_jd": 2460946.5,
+        "x": 118294970.92904179,
+        "y": 64184681.13249675,
+        "z": 18024096.129190728
+      }
+    ]
+  },
+  "54403822": {
+    "name": "(2023 VF5)",
+    "elements": {
+      "orbit_id": "6",
+      "orbit_determination_date": "2023-11-22 05:24:31",
+      "first_observation_date": "2023-11-08",
+      "last_observation_date": "2023-11-22",
+      "data_arc_in_days": 14,
+      "observations_used": 41,
+      "orbit_uncertainty": "7",
+      "minimum_orbit_intersection": ".0296868",
+      "jupiter_tisserand_invariant": "7.229",
+      "epoch_osculation": "2461000.5",
+      "eccentricity": ".4031074402053135",
+      "semi_major_axis": ".7990710297927784",
+      "inclination": "2.118078284664971",
+      "ascending_node_longitude": "122.0089076207281",
+      "orbital_period": "260.9014575729773",
+      "perihelion_distance": ".4769595524307877",
+      "perihelion_argument": "87.20800791886292",
+      "aphelion_distance": "1.121182507154769",
+      "perihelion_time": "2460883.806803416612",
+      "mean_anomaly": "161.0169263169762",
+      "mean_motion": "1.379831310061975",
+      "equinox": "J2000",
+      "orbit_class": {
+        "orbit_class_type": "ATE",
+        "orbit_class_description": "Near-Earth asteroid orbits similar to that of 2062 Aten",
+        "orbit_class_range": "a (semi-major axis) < 1.0 AU; q (perihelion) > 0.983 AU"
+      }
+    },
+    "positions": [
+      {
+        "time_jd": 2460945.5,
+        "x": 90489078.33753578,
+        "y": -74599328.21162766,
+        "z": -1375452.3103348562
+      },
+      {
+        "time_jd": 2460946.5,
+        "x": 93079101.10968624,
+        "y": -73256929.88243125,
+        "z": -1482994.862687924
+      }
+    ]
+  },
+  "54487286": {
+    "name": "(2024 TX2)",
+    "elements": {
+      "orbit_id": "10",
+      "orbit_determination_date": "2024-10-29 06:53:16",
+      "first_observation_date": "2024-09-29",
+      "last_observation_date": "2024-10-29",
+      "data_arc_in_days": 30,
+      "observations_used": 56,
+      "orbit_uncertainty": "6",
+      "minimum_orbit_intersection": ".0490114",
+      "jupiter_tisserand_invariant": "5.772",
+      "epoch_osculation": "2461000.5",
+      "eccentricity": ".276980406025592",
+      "semi_major_axis": "1.043623479389561",
+      "inclination": "24.01818926352697",
+      "ascending_node_longitude": "200.7075563273363",
+      "orbital_period": "389.4163562460115",
+      "perihelion_distance": ".7545602243303996",
+      "perihelion_argument": "288.6837890206341",
+      "aphelion_distance": "1.332686734448723",
+      "perihelion_time": "2461072.670964517698",
+      "mean_anomaly": "293.2808013591562",
+      "mean_motion": ".9244603988143018",
+      "equinox": "J2000",
+      "orbit_class": {
+        "orbit_class_type": "APO",
+        "orbit_class_description": "Near-Earth asteroid orbits which cross the Earth\u2019s orbit similar to that of 1862 Apollo",
+        "orbit_class_range": "a (semi-major axis) > 1.0 AU; q (perihelion) < 1.017 AU"
+      }
+    },
+    "positions": [
+      {
+        "time_jd": 2460945.5,
+        "x": 165281420.4823441,
+        "y": 27333007.145868707,
+        "z": 14649841.542046107
+      },
+      {
+        "time_jd": 2460946.5,
+        "x": 164393612.09389544,
+        "y": 29274526.508277103,
+        "z": 13700685.34364092
+      }
+    ]
+  },
+  "54537922": {
+    "name": "(2025 NO)",
+    "elements": {
+      "orbit_id": "50",
+      "orbit_determination_date": "2025-09-24 07:54:10",
+      "first_observation_date": "2025-07-01",
+      "last_observation_date": "2025-09-24",
+      "data_arc_in_days": 85,
+      "observations_used": 343,
+      "orbit_uncertainty": "4",
+      "minimum_orbit_intersection": ".0595934",
+      "jupiter_tisserand_invariant": "3.324",
+      "epoch_osculation": "2461000.5",
+      "eccentricity": ".5520790347587052",
+      "semi_major_axis": "2.354678882656002",
+      "inclination": "6.651175085520473",
+      "ascending_node_longitude": "168.0491370484904",
+      "orbital_period": "1319.7630355729",
+      "perihelion_distance": "1.05471003795257",
+      "perihelion_argument": "200.0126753954783",
+      "aphelion_distance": "3.654647727359434",
+      "perihelion_time": "2460950.513915017598",
+      "mean_anomaly": "13.63501636932361",
+      "mean_motion": ".2727762411103797",
+      "equinox": "J2000",
+      "orbit_class": {
+        "orbit_class_type": "AMO",
+        "orbit_class_description": "Near-Earth asteroid orbits similar to that of 1221 Amor",
+        "orbit_class_range": "1.017 AU < q (perihelion) < 1.3 AU"
+      }
+    },
+    "positions": [
+      {
+        "time_jd": 2460945.5,
+        "x": 140796916.93430826,
+        "y": -105579065.7419105,
+        "z": 8644878.393688723
+      },
+      {
+        "time_jd": 2460946.5,
+        "x": 141835177.97486532,
+        "y": -102882930.11712046,
+        "z": 8312228.115164899
+      }
+    ]
+  },
+  "54546122": {
+    "name": "(2025 RV6)",
+    "elements": {
+      "orbit_id": "1",
+      "orbit_determination_date": "2025-09-18 08:12:02",
+      "first_observation_date": "2025-09-15",
+      "last_observation_date": "2025-09-18",
+      "data_arc_in_days": 3,
+      "observations_used": 15,
+      "orbit_uncertainty": "7",
+      "minimum_orbit_intersection": ".0332919",
+      "jupiter_tisserand_invariant": "5.534",
+      "epoch_osculation": "2461000.5",
+      "eccentricity": ".310232098330712",
+      "semi_major_axis": "1.116179030829435",
+      "inclination": "7.871947448726957",
+      "ascending_node_longitude": "168.2353858828971",
+      "orbital_period": "430.7241433315815",
+      "perihelion_distance": ".7699044679824792",
+      "perihelion_argument": "287.6264130531887",
+      "aphelion_distance": "1.462453593676392",
+      "perihelion_time": "2461015.256760138724",
+      "mean_anomaly": "347.6662738038087",
+      "mean_motion": ".8358017668001108",
+      "equinox": "J2000",
+      "orbit_class": {
+        "orbit_class_type": "APO",
+        "orbit_class_description": "Near-Earth asteroid orbits which cross the Earth\u2019s orbit similar to that of 1862 Apollo",
+        "orbit_class_range": "a (semi-major axis) > 1.0 AU; q (perihelion) < 1.017 AU"
+      }
+    },
+    "positions": [
+      {
+        "time_jd": 2460945.5,
+        "x": 146151900.3512432,
+        "y": 23348946.695688512,
+        "z": -7280568.416396263
+      },
+      {
+        "time_jd": 2460946.5,
+        "x": 144922539.58005625,
+        "y": 25773058.69737916,
+        "z": -7574035.158820054
+      }
+    ]
+  },
+  "54546124": {
+    "name": "(2025 SA1)",
+    "elements": {
+      "orbit_id": "4",
+      "orbit_determination_date": "2025-09-25 06:55:10",
+      "first_observation_date": "2025-09-17",
+      "last_observation_date": "2025-09-24",
+      "data_arc_in_days": 7,
+      "observations_used": 32,
+      "orbit_uncertainty": "7",
+      "minimum_orbit_intersection": ".00367859",
+      "jupiter_tisserand_invariant": "4.070",
+      "epoch_osculation": "2461000.5",
+      "eccentricity": ".4345049982753208",
+      "semi_major_axis": "1.707168866034782",
+      "inclination": "8.060749161701208",
+      "ascending_node_longitude": "186.0994382428904",
+      "orbital_period": "814.7289521311326",
+      "perihelion_distance": ".9653954608426578",
+      "perihelion_argument": "210.4027671742081",
+      "aphelion_distance": "2.448942271226907",
+      "perihelion_time": "2460972.281406418893",
+      "mean_anomaly": "12.46880163350754",
+      "mean_motion": ".4418647441683859",
+      "equinox": "J2000",
+      "orbit_class": {
+        "orbit_class_type": "APO",
+        "orbit_class_description": "Near-Earth asteroid orbits which cross the Earth\u2019s orbit similar to that of 1862 Apollo",
+        "orbit_class_range": "a (semi-major axis) > 1.0 AU; q (perihelion) < 1.017 AU"
+      }
+    },
+    "positions": [
+      {
+        "time_jd": 2460945.5,
+        "x": 157449665.0254023,
+        "y": -41419768.06792357,
+        "z": 8202050.036092043
+      },
+      {
+        "time_jd": 2460946.5,
+        "x": 157432715.94970858,
+        "y": -38566487.221207656,
+        "z": 7799994.591268562
+      }
+    ]
+  },
+  "54547356": {
+    "name": "(2025 SS5)",
+    "elements": {
+      "orbit_id": "2",
+      "orbit_determination_date": "2025-09-25 06:55:16",
+      "first_observation_date": "2025-09-23",
+      "last_observation_date": "2025-09-25",
+      "data_arc_in_days": 2,
+      "observations_used": 20,
+      "orbit_uncertainty": "7",
+      "minimum_orbit_intersection": ".000770977",
+      "jupiter_tisserand_invariant": "5.799",
+      "epoch_osculation": "2461000.5",
+      "eccentricity": ".264781111584163",
+      "semi_major_axis": "1.055343464089866",
+      "inclination": "1.448125688388344",
+      "ascending_node_longitude": "187.2416158575841",
+      "orbital_period": "395.994509211071",
+      "perihelion_distance": ".7759084485650704",
+      "perihelion_argument": "272.8046054007269",
+      "aphelion_distance": "1.334778479614662",
+      "perihelion_time": "2461017.843499697824",
+      "mean_anomaly": "344.2329634730142",
+      "mean_motion": ".9091035143826063",
+      "equinox": "J2000",
+      "orbit_class": {
+        "orbit_class_type": "APO",
+        "orbit_class_description": "Near-Earth asteroid orbits which cross the Earth\u2019s orbit similar to that of 1862 Apollo",
+        "orbit_class_range": "a (semi-major axis) > 1.0 AU; q (perihelion) < 1.017 AU"
+      }
+    },
+    "positions": [
+      {
+        "time_jd": 2460945.5,
+        "x": 143115740.22361872,
+        "y": 28634402.990119662,
+        "z": -262044.67680715525
+      },
+      {
+        "time_jd": 2460946.5,
+        "x": 141906007.50084662,
+        "y": 31056125.867336866,
+        "z": -326632.3358781041
+      }
+    ]
+  },
+  "54547368": {
+    "name": "(2025 ST6)",
+    "elements": {
+      "orbit_id": "2",
+      "orbit_determination_date": "2025-09-25 06:55:16",
+      "first_observation_date": "2025-09-16",
+      "last_observation_date": "2025-09-25",
+      "data_arc_in_days": 9,
+      "observations_used": 43,
+      "orbit_uncertainty": "8",
+      "minimum_orbit_intersection": ".0183682",
+      "jupiter_tisserand_invariant": "3.502",
+      "epoch_osculation": "2460938.5",
+      "eccentricity": ".7039688664994922",
+      "semi_major_axis": "1.978855136037316",
+      "inclination": "4.786501868367054",
+      "ascending_node_longitude": "172.2921679253696",
+      "orbital_period": "1016.762289822535",
+      "perihelion_distance": ".5858027289544283",
+      "perihelion_argument": "283.0867183857384",
+      "aphelion_distance": "3.371907543120205",
+      "perihelion_time": "2460994.212022922731",
+      "mean_anomaly": "340.2743193242505",
+      "mean_motion": ".3540650588672345",
+      "equinox": "J2000",
+      "orbit_class": {
+        "orbit_class_type": "APO",
+        "orbit_class_description": "Near-Earth asteroid orbits which cross the Earth\u2019s orbit similar to that of 1862 Apollo",
+        "orbit_class_range": "a (semi-major axis) > 1.0 AU; q (perihelion) < 1.017 AU"
+      }
+    },
+    "positions": [
+      {
+        "time_jd": 2460945.5,
+        "x": -8309691.415972202,
+        "y": 86948829.47117718,
+        "z": -7121563.852634378
+      },
+      {
+        "time_jd": 2460946.5,
+        "x": -12671526.248593125,
+        "y": 86475363.46121715,
+        "z": -7033289.917247272
+      }
+    ]
+  },
+  "3137735": {
+    "name": "(2002 TX59)",
+    "elements": {
+      "orbit_id": "9",
+      "orbit_determination_date": "2021-10-31 03:12:02",
+      "first_observation_date": "2002-10-03",
+      "last_observation_date": "2021-10-31",
+      "data_arc_in_days": 6968,
+      "observations_used": 22,
+      "orbit_uncertainty": "2",
+      "minimum_orbit_intersection": ".0795435",
+      "jupiter_tisserand_invariant": "5.184",
+      "epoch_osculation": "2461000.5",
+      "eccentricity": ".146449146679498",
+      "semi_major_axis": "1.224772647669874",
+      "inclination": "13.03837343850742",
+      "ascending_node_longitude": "188.4833648659911",
+      "orbital_period": "495.0871395610658",
+      "perihelion_distance": "1.045405738542231",
+      "perihelion_argument": "132.830242954031",
+      "aphelion_distance": "1.404139556797516",
+      "perihelion_time": "2460920.689083528005",
+      "mean_anomaly": "58.03408659613179",
+      "mean_motion": ".7271447210670201",
+      "equinox": "J2000",
+      "orbit_class": {
+        "orbit_class_type": "AMO",
+        "orbit_class_description": "Near-Earth asteroid orbits similar to that of 1221 Amor",
+        "orbit_class_range": "1.017 AU < q (perihelion) < 1.3 AU"
+      }
+    },
+    "positions": [
+      {
+        "time_jd": 2460945.5,
+        "x": 131744517.16776305,
+        "y": -81268701.93461673,
+        "z": 23114479.198819213
+      },
+      {
+        "time_jd": 2460946.5,
+        "x": 133210080.26190415,
+        "y": -79056326.69544342,
+        "z": 22657823.68278534
+      }
+    ]
+  },
+  "3137864": {
+    "name": "(2002 TS69)",
+    "elements": {
+      "orbit_id": "15",
+      "orbit_determination_date": "2021-04-14 21:34:00",
+      "first_observation_date": "2002-10-10",
+      "last_observation_date": "2016-08-24",
+      "data_arc_in_days": 5067,
+      "observations_used": 58,
+      "orbit_uncertainty": "0",
+      "minimum_orbit_intersection": ".0296977",
+      "jupiter_tisserand_invariant": "5.356",
+      "epoch_osculation": "2461000.5",
+      "eccentricity": ".1300571100732309",
+      "semi_major_axis": "1.176255631610054",
+      "inclination": "8.454060133112826",
+      "ascending_node_longitude": "200.6111508502942",
+      "orbital_period": "465.9625362364559",
+      "perihelion_distance": "1.023275223455488",
+      "perihelion_argument": "195.5455072669061",
+      "aphelion_distance": "1.329236039764621",
+      "perihelion_time": "2460962.576654119901",
+      "mean_anomaly": "29.29936090378631",
+      "mean_motion": ".7725943010519529",
+      "equinox": "J2000",
+      "orbit_class": {
+        "orbit_class_type": "AMO",
+        "orbit_class_description": "Near-Earth asteroid orbits similar to that of 1221 Amor",
+        "orbit_class_range": "1.017 AU < q (perihelion) < 1.3 AU"
+      }
+    },
+    "positions": [
+      {
+        "time_jd": 2460945.5,
+        "x": 152273124.1938129,
+        "y": 27926154.549501862,
+        "z": 4082181.2824293743
+      },
+      {
+        "time_jd": 2460946.5,
+        "x": 151652179.57536358,
+        "y": 30501279.148984205,
+        "z": 3691447.0702931085
+      }
+    ]
+  },
+  "3449749": {
+    "name": "(2009 DO111)",
+    "elements": {
+      "orbit_id": "35",
+      "orbit_determination_date": "2024-02-09 05:54:29",
+      "first_observation_date": "2009-02-22",
+      "last_observation_date": "2024-02-09",
+      "data_arc_in_days": 5465,
+      "observations_used": 288,
+      "orbit_uncertainty": "0",
+      "minimum_orbit_intersection": ".00220418",
+      "jupiter_tisserand_invariant": "5.812",
+      "epoch_osculation": "2461000.5",
+      "eccentricity": ".2814928775586684",
+      "semi_major_axis": "1.050967259241794",
+      "inclination": "2.978895352867045",
+      "ascending_node_longitude": "1.900726597833678",
+      "orbital_period": "393.533951972213",
+      "perihelion_distance": ".7551274612178744",
+      "perihelion_argument": "273.5138746816891",
+      "aphelion_distance": "1.346807057265714",
+      "perihelion_time": "2460876.344155672236",
+      "mean_anomaly": "113.5762333440321",
+      "mean_motion": ".9147876522364687",
+      "equinox": "J2000",
+      "orbit_class": {
+        "orbit_class_type": "APO",
+        "orbit_class_description": "Near-Earth asteroid orbits which cross the Earth\u2019s orbit similar to that of 1862 Apollo",
+        "orbit_class_range": "a (semi-major axis) > 1.0 AU; q (perihelion) < 1.017 AU"
+      }
+    },
+    "positions": [
+      {
+        "time_jd": 2460945.5,
+        "x": 107719438.63257498,
+        "y": -62216160.955916926,
+        "z": -3421773.993283728
+      },
+      {
+        "time_jd": 2460946.5,
+        "x": 109734674.66895793,
+        "y": -59869505.718293115,
+        "z": -3303203.233310126
+      }
+    ]
+  },
+  "3465534": {
+    "name": "(2009 PC)",
+    "elements": {
+      "orbit_id": "10",
+      "orbit_determination_date": "2021-04-15 02:48:05",
+      "first_observation_date": "2009-08-01",
+      "last_observation_date": "2009-08-19",
+      "data_arc_in_days": 18,
+      "observations_used": 33,
+      "orbit_uncertainty": "7",
+      "minimum_orbit_intersection": ".0377672",
+      "jupiter_tisserand_invariant": "6.042",
+      "epoch_osculation": "2461000.5",
+      "eccentricity": ".3426957717934591",
+      "semi_major_axis": ".9956229548913211",
+      "inclination": "7.089873932596293",
+      "ascending_node_longitude": "134.2316420234683",
+      "orbital_period": "362.8614055330134",
+      "perihelion_distance": ".6544271779495555",
+      "perihelion_argument": "48.20999809140963",
+      "aphelion_distance": "1.336818731833087",
+      "perihelion_time": "2461122.379381913871",
+      "mean_anomaly": "239.0817187500484",
+      "mean_motion": ".9921143293572096",
+      "equinox": "J2000",
+      "orbit_class": {
+        "orbit_class_type": "ATE",
+        "orbit_class_description": "Near-Earth asteroid orbits similar to that of 2062 Aten",
+        "orbit_class_range": "a (semi-major axis) < 1.0 AU; q (perihelion) > 0.983 AU"
+      }
+    },
+    "positions": [
+      {
+        "time_jd": 2460945.5,
+        "x": 172753847.28169218,
+        "y": 81055631.18193577,
+        "z": -22428150.488510262
+      },
+      {
+        "time_jd": 2460946.5,
+        "x": 171608434.80901802,
+        "y": 82591116.56454149,
+        "z": -22459291.702209715
+      }
+    ]
+  },
+  "3752783": {
+    "name": "(2016 JS5)",
+    "elements": {
+      "orbit_id": "5",
+      "orbit_determination_date": "2021-04-15 17:05:37",
+      "first_observation_date": "2016-05-03",
+      "last_observation_date": "2016-05-05",
+      "data_arc_in_days": 2,
+      "observations_used": 38,
+      "orbit_uncertainty": "6",
+      "minimum_orbit_intersection": "1.3625E-5",
+      "jupiter_tisserand_invariant": "3.462",
+      "epoch_osculation": "2461000.5",
+      "eccentricity": ".6271713470324781",
+      "semi_major_axis": "2.104206138434016",
+      "inclination": "3.053577987585375",
+      "ascending_node_longitude": "45.32780823357135",
+      "orbital_period": "1114.887000559546",
+      "perihelion_distance": ".7845083401583449",
+      "perihelion_argument": "245.1250923231888",
+      "aphelion_distance": "3.423903936709686",
+      "perihelion_time": "2460901.876096531546",
+      "mean_anomaly": "31.84592270860107",
+      "mean_motion": ".3229026796610968",
+      "equinox": "J2000",
+      "orbit_class": {
+        "orbit_class_type": "APO",
+        "orbit_class_description": "Near-Earth asteroid orbits which cross the Earth\u2019s orbit similar to that of 1862 Apollo",
+        "orbit_class_range": "a (semi-major axis) > 1.0 AU; q (perihelion) < 1.017 AU"
+      }
+    },
+    "positions": [
+      {
+        "time_jd": 2460945.5,
+        "x": -86746602.5779981,
+        "y": -113795634.17541753,
+        "z": -977019.3558071733
+      },
+      {
+        "time_jd": 2460946.5,
+        "x": -83584804.47946216,
+        "y": -114654655.62106425,
+        "z": -1129183.0527028628
+      }
+    ]
+  },
+  "54137511": {
+    "name": "(2021 GU12)",
+    "elements": {
+      "orbit_id": "4",
+      "orbit_determination_date": "2021-04-20 06:22:11",
+      "first_observation_date": "2021-04-13",
+      "last_observation_date": "2021-04-20",
+      "data_arc_in_days": 7,
+      "observations_used": 30,
+      "orbit_uncertainty": "7",
+      "minimum_orbit_intersection": ".00101478",
+      "jupiter_tisserand_invariant": "5.487",
+      "epoch_osculation": "2461000.5",
+      "eccentricity": ".3169143359599338",
+      "semi_major_axis": "1.130316059692547",
+      "inclination": "1.27861853414711",
+      "ascending_node_longitude": "15.93078863898075",
+      "orbital_period": "438.9330412130221",
+      "perihelion_distance": ".7721026962102345",
+      "perihelion_argument": "95.08118834797712",
+      "aphelion_distance": "1.488529423174859",
+      "perihelion_time": "2461004.895443518742",
+      "mean_anomaly": "356.394986209345",
+      "mean_motion": ".8201706551986037",
+      "equinox": "J2000",
+      "orbit_class": {
+        "orbit_class_type": "APO",
+        "orbit_class_description": "Near-Earth asteroid orbits which cross the Earth\u2019s orbit similar to that of 1862 Apollo",
+        "orbit_class_range": "a (semi-major axis) > 1.0 AU; q (perihelion) < 1.017 AU"
+      }
+    },
+    "positions": [
+      {
+        "time_jd": 2460945.5,
+        "x": 125239476.88414365,
+        "y": 72722459.92749226,
+        "z": 793564.0379909835
+      },
+      {
+        "time_jd": 2460946.5,
+        "x": 123182566.46626921,
+        "y": 74626749.7389092,
+        "z": 847036.1855150583
+      }
+    ]
+  },
+  "54209488": {
+    "name": "(2021 TO15)",
+    "elements": {
+      "orbit_id": "3",
+      "orbit_determination_date": "2023-09-29 07:42:02",
+      "first_observation_date": "2021-10-04",
+      "last_observation_date": "2023-09-11",
+      "data_arc_in_days": 707,
+      "observations_used": 30,
+      "orbit_uncertainty": "1",
+      "minimum_orbit_intersection": ".00829692",
+      "jupiter_tisserand_invariant": "5.941",
+      "epoch_osculation": "2461000.5",
+      "eccentricity": ".4209881953032831",
+      "semi_major_axis": "1.010539417404542",
+      "inclination": "7.813055412631259",
+      "ascending_node_longitude": "35.12719846425324",
+      "orbital_period": "371.0464787565537",
+      "perihelion_distance": ".5851142517885728",
+      "perihelion_argument": "109.2411596508843",
+      "aphelion_distance": "1.435964583020512",
+      "perihelion_time": "2461062.895795522205",
+      "mean_anomaly": "299.4617987933213",
+      "mean_motion": ".970228854364627",
+      "equinox": "J2000",
+      "orbit_class": {
+        "orbit_class_type": "APO",
+        "orbit_class_description": "Near-Earth asteroid orbits which cross the Earth\u2019s orbit similar to that of 1862 Apollo",
+        "orbit_class_range": "a (semi-major axis) > 1.0 AU; q (perihelion) < 1.017 AU"
+      }
+    },
+    "positions": [
+      {
+        "time_jd": 2460945.5,
+        "x": 155235121.9107449,
+        "y": 53907377.52814253,
+        "z": -6206472.928448402
+      },
+      {
+        "time_jd": 2460946.5,
+        "x": 153618802.08328912,
+        "y": 55586312.32919262,
+        "z": -5890441.6227955725
+      }
+    ]
+  },
+  "54289177": {
+    "name": "(2022 MP2)",
+    "elements": {
+      "orbit_id": "4",
+      "orbit_determination_date": "2024-01-23 05:53:43",
+      "first_observation_date": "2022-06-26",
+      "last_observation_date": "2022-07-06",
+      "data_arc_in_days": 10,
+      "observations_used": 46,
+      "orbit_uncertainty": "5",
+      "minimum_orbit_intersection": ".0172455",
+      "jupiter_tisserand_invariant": "6.139",
+      "epoch_osculation": "2461000.5",
+      "eccentricity": ".1850601722014681",
+      "semi_major_axis": ".9847576994465563",
+      "inclination": "1.073168207004356",
+      "ascending_node_longitude": "162.9536301818648",
+      "orbital_period": "356.9377687375144",
+      "perihelion_distance": ".802518270010255",
+      "perihelion_argument": "351.0917277570937",
+      "aphelion_distance": "1.166997128882858",
+      "perihelion_time": "2461085.172050896613",
+      "mean_anomaly": "274.6015328369562",
+      "mean_motion": "1.008579174104541",
+      "equinox": "J2000",
+      "orbit_class": {
+        "orbit_class_type": "ATE",
+        "orbit_class_description": "Near-Earth asteroid orbits similar to that of 2062 Aten",
+        "orbit_class_range": "a (semi-major axis) < 1.0 AU; q (perihelion) > 0.983 AU"
+      }
+    },
+    "positions": [
+      {
+        "time_jd": 2460945.5,
+        "x": 156433467.17980868,
+        "y": 50033395.902094394,
+        "z": -1755106.7749790733
+      },
+      {
+        "time_jd": 2460946.5,
+        "x": 155398083.87642932,
+        "y": 52101669.46289957,
+        "z": -1786462.9685783423
+      }
+    ]
+  },
+  "54356834": {
+    "name": "(2022 TA41)",
+    "elements": {
+      "orbit_id": "1",
+      "orbit_determination_date": "2023-04-25 15:43:27",
+      "first_observation_date": "2022-10-01",
+      "last_observation_date": "2022-10-01",
+      "data_arc_in_days": null,
+      "observations_used": 7,
+      "orbit_uncertainty": "8",
+      "minimum_orbit_intersection": ".00457615",
+      "jupiter_tisserand_invariant": "4.813",
+      "epoch_osculation": "2459853.5",
+      "eccentricity": ".2448370020218944",
+      "semi_major_axis": "1.30642189477864",
+      "inclination": "31.34907590703974",
+      "ascending_node_longitude": "188.0165947096204",
+      "orbital_period": "545.4106353354389",
+      "perihelion_distance": ".9865614746852751",
+      "perihelion_argument": "154.4703759993658",
+      "aphelion_distance": "1.626282314872005",
+      "perihelion_time": "2459831.031119048256",
+      "mean_anomaly": "14.83065532386082",
+      "mean_motion": ".6600531355216286",
+      "equinox": "J2000",
+      "orbit_class": {
+        "orbit_class_type": "APO",
+        "orbit_class_description": "Near-Earth asteroid orbits which cross the Earth\u2019s orbit similar to that of 1862 Apollo",
+        "orbit_class_range": "a (semi-major axis) > 1.0 AU; q (perihelion) < 1.017 AU"
+      }
+    },
+    "positions": [
+      {
+        "time_jd": 2460945.5,
+        "x": 148202644.3268743,
+        "y": -66082.16247799723,
+        "z": 12630662.94071478
+      },
+      {
+        "time_jd": 2460946.5,
+        "x": 148464346.31307194,
+        "y": 2392116.7154192044,
+        "z": 11170036.445887383
+      }
+    ]
+  },
+  "54423831": {
+    "name": "(2024 CS)",
+    "elements": {
+      "orbit_id": "1",
+      "orbit_determination_date": "2024-02-05 11:42:04",
+      "first_observation_date": "2024-02-01",
+      "last_observation_date": "2024-02-05",
+      "data_arc_in_days": 4,
+      "observations_used": 17,
+      "orbit_uncertainty": "8",
+      "minimum_orbit_intersection": ".00680804",
+      "jupiter_tisserand_invariant": "4.219",
+      "epoch_osculation": "2460344.5",
+      "eccentricity": ".417890998567392",
+      "semi_major_axis": "1.563225379941053",
+      "inclination": "26.62825838766954",
+      "ascending_node_longitude": "131.9866072099929",
+      "orbital_period": "713.8892184990874",
+      "perihelion_distance": ".9099675649315959",
+      "perihelion_argument": "315.771908429264",
+      "aphelion_distance": "2.216483194950511",
+      "perihelion_time": "2460307.499133689270",
+      "mean_anomaly": "18.65879400709821",
+      "mean_motion": ".5042799228105449",
+      "equinox": "J2000",
+      "orbit_class": {
+        "orbit_class_type": "APO",
+        "orbit_class_description": "Near-Earth asteroid orbits which cross the Earth\u2019s orbit similar to that of 1862 Apollo",
+        "orbit_class_range": "a (semi-major axis) > 1.0 AU; q (perihelion) < 1.017 AU"
+      }
+    },
+    "positions": [
+      {
+        "time_jd": 2460945.5,
+        "x": 191747368.25088468,
+        "y": -45252793.90349661,
+        "z": -56281821.78161604
+      },
+      {
+        "time_jd": 2460946.5,
+        "x": 191104452.45149022,
+        "y": -43062455.30437819,
+        "z": -56776865.063610636
+      }
+    ]
+  },
+  "54545784": {
+    "name": "(2025 ST)",
+    "elements": {
+      "orbit_id": "7",
+      "orbit_determination_date": "2025-09-25 06:55:10",
+      "first_observation_date": "2025-09-01",
+      "last_observation_date": "2025-09-24",
+      "data_arc_in_days": 23,
+      "observations_used": 109,
+      "orbit_uncertainty": "7",
+      "minimum_orbit_intersection": ".0491212",
+      "jupiter_tisserand_invariant": "4.926",
+      "epoch_osculation": "2461000.5",
+      "eccentricity": ".7583209553442434",
+      "semi_major_axis": "1.194387373686974",
+      "inclination": "24.16149066975524",
+      "ascending_node_longitude": "356.364787809999",
+      "orbital_period": "476.7780272652398",
+      "perihelion_distance": ".2886583994215661",
+      "perihelion_argument": "137.8963588667678",
+      "aphelion_distance": "2.100116347952382",
+      "perihelion_time": "2460995.316539710105",
+      "mean_anomaly": "3.913866826173861",
+      "mean_motion": ".7550683534325835",
+      "equinox": "J2000",
+      "orbit_class": {
+        "orbit_class_type": "APO",
+        "orbit_class_description": "Near-Earth asteroid orbits which cross the Earth\u2019s orbit similar to that of 1862 Apollo",
+        "orbit_class_range": "a (semi-major axis) > 1.0 AU; q (perihelion) < 1.017 AU"
+      }
+    },
+    "positions": [
+      {
+        "time_jd": 2460945.5,
+        "x": 165423815.80428952,
+        "y": -4282480.949826712,
+        "z": 2787952.969403365
+      },
+      {
+        "time_jd": 2460946.5,
+        "x": 163515609.38145858,
+        "y": -2720417.6357673733,
+        "z": 3433024.2448357837
+      }
+    ]
+  },
+  "54547369": {
+    "name": "(2025 SW6)",
+    "elements": {
+      "orbit_id": "2",
+      "orbit_determination_date": "2025-09-25 06:55:16",
+      "first_observation_date": "2025-09-16",
+      "last_observation_date": "2025-09-25",
+      "data_arc_in_days": 9,
+      "observations_used": 20,
+      "orbit_uncertainty": "6",
+      "minimum_orbit_intersection": ".00221459",
+      "jupiter_tisserand_invariant": "5.834",
+      "epoch_osculation": "2461000.5",
+      "eccentricity": ".1998433795696109",
+      "semi_major_axis": "1.050186571277249",
+      "inclination": "2.431240788276793",
+      "ascending_node_longitude": "176.3632434489717",
+      "orbital_period": "393.0955413234579",
+      "perihelion_distance": ".8403137376945813",
+      "perihelion_argument": "276.3249770432129",
+      "aphelion_distance": "1.260059404859916",
+      "perihelion_time": "2461017.640894926495",
+      "mean_anomaly": "344.3022331091245",
+      "mean_motion": ".9158078944064509",
+      "equinox": "J2000",
+      "orbit_class": {
+        "orbit_class_type": "APO",
+        "orbit_class_description": "Near-Earth asteroid orbits which cross the Earth\u2019s orbit similar to that of 1862 Apollo",
+        "orbit_class_range": "a (semi-major axis) > 1.0 AU; q (perihelion) < 1.017 AU"
+      }
+    },
+    "positions": [
+      {
+        "time_jd": 2460945.5,
+        "x": 144982014.0784739,
+        "y": 25174469.721892897,
+        "z": -1457184.630757412
+      },
+      {
+        "time_jd": 2460946.5,
+        "x": 144008740.28014985,
+        "y": 27669184.825552557,
+        "z": -1560272.3414433526
+      }
+    ]
+  }
+}

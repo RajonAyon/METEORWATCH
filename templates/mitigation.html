@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Asteroid Mitigation System</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono&display=swap');
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Space Mono', monospace;
+      overflow: hidden;
+      background: #000;
+      color: #fff;
+    }
+    
+    .ui-panel {
+      background: linear-gradient(135deg, rgba(15,15,35,0.95), rgba(25,25,50,0.95));
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(100,150,255,0.3);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+      border-radius: 12px;
+      animation: slideIn 0.5s ease-out;
+    }
+    
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    
+    @keyframes glow {
+      0%, 100% { box-shadow: 0 0 20px rgba(102,126,234,0.5); }
+      50% { box-shadow: 0 0 40px rgba(102,126,234,0.8); }
+    }
+    
+    #backBtn {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      padding: 12px 24px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      font-family: 'Orbitron', sans-serif;
+      z-index: 1001;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(102,126,234,0.4);
+    }
+    
+    #backBtn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102,126,234,0.6);
+    }
+    
+    #asteroidInfo {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      width: 320px;
+      padding: 20px;
+      z-index: 1000;
+    }
+    
+    #asteroidInfo h2 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 18px;
+      margin-bottom: 15px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(100,150,255,0.2);
+      font-size: 12px;
+    }
+    
+    .info-label {
+      opacity: 0.8;
+    }
+    
+    .info-value {
+      font-weight: bold;
+      color: #667eea;
+    }
+    
+    #mitigationPanel {
+      position: fixed;
+      left: 20px;
+      top: 100px;
+      width: 320px;
+      padding: 20px;
+      z-index: 1000;
+      max-height: calc(100vh - 120px);
+      overflow-y: auto;
+    }
+    
+    #mitigationPanel h2 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 18px;
+      margin-bottom: 15px;
+      background: linear-gradient(135deg, #ff8c00 0%, #ff4444 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .method-btn {
+      width: 100%;
+      padding: 15px;
+      margin-bottom: 12px;
+      border: 2px solid rgba(100,150,255,0.3);
+      border-radius: 8px;
+      background: rgba(30,30,60,0.8);
+      color: white;
+      cursor: pointer;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .method-btn:hover {
+      transform: translateX(5px);
+      border-color: rgba(100,150,255,0.8);
+      background: rgba(50,50,90,0.9);
+    }
+    
+    .method-btn.active {
+      border-color: #667eea;
+      background: linear-gradient(135deg, rgba(102,126,234,0.3), rgba(118,75,162,0.3));
+      animation: glow 2s infinite;
+    }
+    
+    .method-icon {
+      font-size: 24px;
+      margin-right: 10px;
+    }
+    
+    #methodDetails {
+      margin-top: 20px;
+      padding: 15px;
+      background: rgba(30,30,60,0.8);
+      border-radius: 8px;
+      border-left: 3px solid #667eea;
+      display: none;
+    }
+    
+    #methodDetails.visible {
+      display: block;
+      animation: slideIn 0.5s ease-out;
+    }
+    
+    #methodDetails h3 {
+      font-size: 14px;
+      margin-bottom: 10px;
+      color: #667eea;
+    }
+    
+    #methodDetails p {
+      font-size: 11px;
+      line-height: 1.6;
+      opacity: 0.9;
+      margin-bottom: 10px;
+    }
+    
+    .param-control {
+      margin: 15px 0;
+    }
+    
+    .param-control label {
+      display: block;
+      font-size: 11px;
+      margin-bottom: 5px;
+      opacity: 0.8;
+    }
+    
+    .param-control input[type="range"] {
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: rgba(100,150,255,0.2);
+      outline: none;
+      -webkit-appearance: none;
+    }
+    
+    .param-control input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      cursor: pointer;
+    }
+    
+    .param-value {
+      float: right;
+      color: #667eea;
+      font-weight: bold;
+    }
+    
+    #applyBtn {
+      width: 100%;
+      padding: 12px;
+      margin-top: 15px;
+      background: linear-gradient(135deg, #44ff44 0%, #00cc00 100%);
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    #applyBtn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 20px rgba(68,255,68,0.4);
+    }
+    
+    #applyBtn:disabled {
+      background: rgba(100,100,100,0.5);
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    #resultPanel {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      padding: 20px;
+      z-index: 1000;
+      display: none;
+    }
+    
+    #resultPanel.visible {
+      display: block;
+      animation: slideIn 0.5s ease-out;
+    }
+    
+    .comparison {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 15px;
+    }
+    
+    .comparison-item {
+      flex: 1;
+      padding: 15px;
+      margin: 0 5px;
+      background: rgba(30,30,60,0.8);
+      border-radius: 8px;
+      text-align: center;
+    }
+    
+    .comparison-label {
+      font-size: 11px;
+      opacity: 0.8;
+      margin-bottom: 8px;
+    }
+    
+    .comparison-value {
+      font-size: 18px;
+      font-weight: bold;
+      font-family: 'Orbitron', sans-serif;
+    }
+    
+    .comparison-value.before {
+      color: #ff4444;
+    }
+    
+    .comparison-value.after {
+      color: #44ff44;
+    }
+    
+    .probability-bar {
+      width: 100%;
+      height: 8px;
+      background: rgba(100,100,100,0.3);
+      border-radius: 4px;
+      margin-top: 10px;
+      overflow: hidden;
+    }
+    
+    .probability-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #44ff44 0%, #ffaa00 50%, #ff4444 100%);
+      transition: width 1s ease;
+    }
+    
+    #controls {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 15px;
+      z-index: 1000;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    
+    .control-btn {
+      padding: 10px 20px;
+      background: rgba(50,50,80,0.9);
+      border: 1px solid rgba(100,150,255,0.5);
+      border-radius: 6px;
+      color: white;
+      cursor: pointer;
+      font-family: 'Orbitron', sans-serif;
+      transition: all 0.3s ease;
+    }
+    
+    .control-btn:hover {
+      background: rgba(100,150,255,0.3);
+      border-color: rgba(100,150,255,0.8);
+    }
+    
+    #dateDisplay {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 14px;
+      color: #667eea;
+    }
+    
+    .effect-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 999;
+    }
+    
+    @keyframes laser-beam {
+      0% { opacity: 0; transform: scaleY(0); }
+      50% { opacity: 1; transform: scaleY(1); }
+      100% { opacity: 0; transform: scaleY(1); }
+    }
+    
+    @keyframes explosion {
+      0% { opacity: 1; transform: scale(0); }
+      50% { opacity: 1; transform: scale(1); }
+      100% { opacity: 0; transform: scale(2); }
+    }
+    
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: rgba(20,20,40,0.5);
+      border-radius: 10px;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+  <button id="backBtn">← Back to Solar System</button>
+  
+  <div id="asteroidInfo" class="ui-panel">
+    <h2>Threat Assessment</h2>
+    <div class="info-row">
+      <span class="info-label">Asteroid:</span>
+      <span class="info-value" id="asteroidName">433 Eros</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Diameter:</span>
+      <span class="info-value" id="asteroidDiameter">16,840 m</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Velocity:</span>
+      <span class="info-value" id="asteroidVelocity">18.5 km/s</span>
+    </div>
+    
+    <div class="info-row">
+      <span class="info-label">Impact Probability:</span>
+      <span class="info-value" id="impactProb">0.001%</span>
+    </div>
+    <div class="probability-bar">
+      <div class="probability-fill" id="probBar" style="width: 1%"></div>
+    </div>
+  </div>
+  
+  <div id="mitigationPanel" class="ui-panel">
+    <h2>Mitigation Methods</h2>
+    
+    <button class="method-btn" data-method="kinetic">
+      <span class="method-icon">🚀</span>
+      <span>Kinetic Impactor</span>
+    </button>
+    
+    <button class="method-btn" data-method="gravity">
+      <span class="method-icon">🛸</span>
+      <span>Gravity Tractor</span>
+    </button>
+    
+    <button class="method-btn" data-method="laser">
+      <span class="method-icon">⚡</span>
+      <span>Laser Ablation</span>
+    </button>
+    
+    <button class="method-btn" data-method="nuclear">
+      <span class="method-icon">💥</span>
+      <span>Nuclear Detonation</span>
+    </button>
+    
+    <div id="methodDetails">
+      <h3 id="methodTitle"></h3>
+      <p id="methodDescription"></p>
+      <div id="methodParams"></div>
+      <button id="applyBtn">Apply Mitigation</button>
+    </div>
+  </div>
+  
+  <div id="resultPanel" class="ui-panel">
+    <h2 style="font-family: 'Orbitron', sans-serif; margin-bottom: 15px; color: #44ff44;">Mission Success!</h2>
+    <div class="comparison">
+      <div class="comparison-item">
+        <div class="comparison-label">Impact Probability</div>
+        <div class="comparison-value before" id="probBefore">0.001%</div>
+        <div style="font-size: 10px; margin-top: 5px;">BEFORE</div>
+      </div>
+      <div class="comparison-item">
+        <div style="font-size: 30px; color: #667eea;">→</div>
+      </div>
+      <div class="comparison-item">
+        <div class="comparison-label">Impact Probability</div>
+        <div class="comparison-value after" id="probAfter">0.00001%</div>
+        <div style="font-size: 10px; margin-top: 5px;">AFTER</div>
+      </div>
+    </div>
+    <div style="margin-top: 15px; text-align: center; font-size: 12px;">
+      <span style="opacity: 0.8;">Trajectory Deflection:</span>
+      <span style="color: #667eea; font-weight: bold;" id="deflection">+15,000 km</span>
+    </div>
+  </div>
+  
+  <div id="controls" class="ui-panel">
+    <button class="control-btn" id="playBtn">▶ Play</button>
+    <button class="control-btn" id="speedBtn">⚡ Speed x1</button>
+    <div id="dateDisplay">2025-01-01</div>
+  </div>
+  
+  <div class="effect-overlay" id="effectOverlay"></div>
+
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.module.js"
+      }
+    }
+  </script>
+  <script type="module">
+    import * as THREE from "three";
+
+    // Mock asteroid data
+    let asteroidData = {
+      id: "2000433",
+      name_limited: "433 Eros",
+      avg_diameter_m: 16840,
+      assumed_density_kg_m3: 2670,
+      avg_relative_velocity_earth_kms: 18.5,
+      orbital_data: { orbit_uncertainty: 0, eccentricity: 0.223, semi_major_axis: 1.458 },
+      close_approach_data: []
+    };
+
+    try {
+      const stored = localStorage.getItem("selectedAsteroid");
+      if (stored) asteroidData = JSON.parse(stored);
+    } catch (e) {
+      console.warn("Using mock data");
+    }
+
+    // Calculate asteroid mass
+    const radius = asteroidData.avg_diameter_m / 2;
+    const volume = (4/3) * Math.PI * Math.pow(radius, 3);
+    const mass = volume * asteroidData.assumed_density_kg_m3;
+
+    // Update UI
+    document.getElementById("asteroidName").textContent = asteroidData.name_limited || asteroidData.id;
+    document.getElementById("asteroidDiameter").textContent = asteroidData.avg_diameter_m.toLocaleString() + " m";
+    document.getElementById("asteroidVelocity").textContent = asteroidData.avg_relative_velocity_earth_kms.toFixed(1) + " km/s";
+
+    // Scene setup
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 5000);
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    let isDragging = false;
+    let previousMousePosition = { x: 0, y: 0 };
+    let cameraRotation = { theta: Math.PI / 4, phi: Math.PI / 6 };
+    let cameraDistance = 600;
+
+    scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+    const pointLight = new THREE.PointLight(0xffffff, 1.5);
+    scene.add(pointLight);
+
+    // Sun
+    const sun = new THREE.Mesh(
+      new THREE.SphereGeometry(30, 64, 64),
+      new THREE.MeshBasicMaterial({ color: 0xffaa00 })
+    );
+    scene.add(sun);
+
+    // Earth
+    const EARTH_SCALE = 6;
+    const earth = new THREE.Mesh(
+      new THREE.SphereGeometry(4 * EARTH_SCALE, 64, 64),
+      new THREE.MeshStandardMaterial({ color: 0x3399ff, metalness: 0.3, roughness: 0.7 })
+    );
+    scene.add(earth);
+
+    const earthOrbitLine = new THREE.Line(
+      new THREE.BufferGeometry(),
+      new THREE.LineBasicMaterial({ color: 0xffffff, opacity: 0.3, transparent: true })
+    );
+    scene.add(earthOrbitLine);
+
+    // Asteroid
+    const asteroidSize = Math.min(15, Math.max(5, asteroidData.avg_diameter_m / 100));
+    const asteroid = new THREE.Mesh(
+      new THREE.SphereGeometry(asteroidSize, 32, 32),
+      new THREE.MeshStandardMaterial({ color: 0xff8888, emissive: 0xff4444, emissiveIntensity: 0.3 })
+    );
+    scene.add(asteroid);
+
+    const asteroidOrbitLine = new THREE.Line(
+      new THREE.BufferGeometry(),
+      new THREE.LineBasicMaterial({ color: 0xffaa66, opacity: 0.4, transparent: true })
+    );
+    scene.add(asteroidOrbitLine);
+
+    const modifiedOrbitLine = new THREE.Line(
+      new THREE.BufferGeometry(),
+      new THREE.LineBasicMaterial({ color: 0x44ff44, opacity: 0.6, transparent: true })
+    );
+    scene.add(modifiedOrbitLine);
+    modifiedOrbitLine.visible = false;
+
+    // Stars
+    const starsGeometry = new THREE.BufferGeometry();
+    const starsPos = [];
+    for (let i = 0; i < 2000; i++) {
+      const r = 1500 + Math.random() * 500;
+      const theta = Math.random() * 2 * Math.PI;
+      const phi = Math.acos(2 * Math.random() - 1);
+      starsPos.push(
+        r * Math.sin(phi) * Math.cos(theta),
+        r * Math.sin(phi) * Math.sin(theta),
+        r * Math.cos(phi)
+      );
+    }
+    starsGeometry.setAttribute("position", new THREE.Float32BufferAttribute(starsPos, 3));
+    const stars = new THREE.Points(starsGeometry, new THREE.PointsMaterial({ color: 0xffffff, size: 2 }));
+    scene.add(stars);
+
+    let planetPositions = {};
+    let asteroidPositions = [];
+    let modifiedPositions = [];
+    let currentDate = new Date(2025, 0, 1);
+    let playing = false;
+    let speed = 1;
+    let mitigationApplied = false;
+    let selectedMethod = null;
+
+    function scale3D(x, y, z) {
+      const dist = Math.sqrt(x*x + y*y + z*z);
+      const r = Math.log10(dist + 1.5) * 800;
+      const theta = Math.atan2(y, x);
+      const phi = Math.acos(z / dist);
+      return { 
+        x: r * Math.sin(phi) * Math.cos(theta), 
+        y: r * Math.sin(phi) * Math.sin(theta), 
+        z: r * Math.cos(phi) 
+      };
+    }
+
+    function drawOrbits() {
+      const earthPoints = [];
+      for (const dateKey in planetPositions) {
+        if (planetPositions[dateKey].Earth) {
+          const p = planetPositions[dateKey].Earth;
+          const pos = scale3D(p.x, p.y, p.z);
+          earthPoints.push(new THREE.Vector3(pos.x, pos.y, pos.z));
+        }
+      }
+      if (earthPoints.length > 0) {
+        earthOrbitLine.geometry.dispose();
+        earthOrbitLine.geometry = new THREE.BufferGeometry().setFromPoints(earthPoints);
+      }
+
+      if (asteroidPositions.length > 0) {
+        const astPoints = asteroidPositions.map(p => {
+          const pos = scale3D(p.x, p.y, p.z);
+          return new THREE.Vector3(pos.x, pos.y, pos.z);
+        });
+        asteroidOrbitLine.geometry.dispose();
+        asteroidOrbitLine.geometry = new THREE.BufferGeometry().setFromPoints(astPoints);
+      }
+    }
+
+    function updatePositions() {
+      const dateStr = currentDate.toISOString().split('T')[0];
+
+      if (planetPositions[dateStr] && planetPositions[dateStr].Earth) {
+        const e = planetPositions[dateStr].Earth;
+        const pos = scale3D(e.x, e.y, e.z);
+        earth.position.set(pos.x, pos.y, pos.z);
+      }
+
+      const positions = mitigationApplied ? modifiedPositions : asteroidPositions;
+      if (positions.length > 0) {
+        const posEntry = positions.find(p => p.date === dateStr);
+        if (posEntry) {
+          const pos = scale3D(posEntry.x, posEntry.y, posEntry.z);
+          asteroid.position.set(pos.x, pos.y, pos.z);
+        }
+      }
+
+      document.getElementById("dateDisplay").textContent = dateStr;
+    }
+
+    // Mitigation methods data
+    const methods = {
+      kinetic: {
+        title: "Kinetic Impactor",
+        icon: "🚀",
+        description: "Launch a spacecraft to collide with the asteroid at high velocity, transferring momentum and changing its trajectory. This method was successfully demonstrated by NASA's DART mission in 2022.",
+        params: [
+          { id: "impactorMass", label: "Impactor Mass (kg)", min: 100, max: 10000, default: 500, step: 100 },
+          { id: "impactVelocity", label: "Impact Velocity (km/s)", min: 5, max: 30, default: 15, step: 1 }
+        ]
+      },
+      gravity: {
+        title: "Gravity Tractor",
+        icon: "🛸",
+        description: "Position a spacecraft near the asteroid to slowly pull it using gravitational force. This gentle method is ideal for long-term deflection with minimal risk of fragmentation.",
+        params: [
+          { id: "spacecraftMass", label: "Spacecraft Mass (kg)", min: 1000, max: 50000, default: 20000, step: 1000 },
+          { id: "duration", label: "Operation Duration (years)", min: 1, max: 20, default: 10, step: 1 }
+        ]
+      },
+      laser: {
+        title: "Laser Ablation",
+        icon: "⚡",
+        description: "Focus high-powered lasers on the asteroid's surface to vaporize material, creating a jet that pushes the asteroid. This method allows precise, continuous thrust adjustments.",
+        params: [
+          { id: "laserPower", label: "Laser Power (MW)", min: 10, max: 500, default: 100, step: 10 },
+          { id: "duration", label: "Operation Duration (years)", min: 1, max: 15, default: 5, step: 1 }
+        ]
+      },
+      nuclear: {
+        title: "Nuclear Detonation",
+        icon: "💥",
+        description: "Detonate a nuclear device near or on the asteroid to create a powerful impulse. This is a last-resort option for imminent threats, with risk of fragmenting the asteroid into multiple hazards.",
+        params: [
+          { id: "yieldMT", label: "Nuclear Yield (Megatons)", min: 0.1, max: 100, default: 1, step: 0.1 },
+          { id: "detonationDist", label: "Detonation Distance (m)", min: 0, max: 1000, default: 100, step: 50 }
+        ]
+      }
+    };
+
+    // Method selection
+    document.querySelectorAll('.method-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.method-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        selectedMethod = btn.dataset.method;
+        const method = methods[selectedMethod];
+        
+        document.getElementById('methodTitle').textContent = method.title;
+        document.getElementById('methodDescription').textContent = method.description;
+        
+        const paramsHTML = method.params.map(param => `
+          <div class="param-control">
+            <label>
+              ${param.label}
+              <span class="param-value" id="${param.id}-value">${param.default}</span>
+            </label>
+            <input type="range" 
+              id="${param.id}" 
+              min="${param.min}" 
+              max="${param.max}" 
+              value="${param.default}" 
+              step="${param.step}">
+          </div>
+        `).join('');
+        
+        document.getElementById('methodParams').innerHTML = paramsHTML;
+        
+        method.params.forEach(param => {
+          const input = document.getElementById(param.id);
+          const valueDisplay = document.getElementById(`${param.id}-value`);
+          input.addEventListener('input', () => {
+            valueDisplay.textContent = input.value;
+          });
+        });
+        
+        document.getElementById('methodDetails').classList.add('visible');
+        document.getElementById('applyBtn').disabled = false;
+      });
+    });
+
+    // Apply mitigation
+    document.getElementById('applyBtn').addEventListener('click', () => {
+      if (!selectedMethod) return;
+      
+      const method = methods[selectedMethod];
+      let deltaV = 0;
+      
+      // Calculate delta-V based on method
+      if (selectedMethod === 'kinetic') {
+        const impactorMass = parseFloat(document.getElementById('impactorMass').value);
+        const impactVelocity = parseFloat(document.getElementById('impactVelocity').value) * 1000;
+        deltaV = (impactorMass * impactVelocity) / mass;
+      } else if (selectedMethod === 'gravity') {
+        const spacecraftMass = parseFloat(document.getElementById('spacecraftMass').value);
+        const duration = parseFloat(document.getElementById('duration').value) * 365.25 * 24 * 3600;
+        const G = 6.674e-11;
+        const distance = 100;
+        const force = G * spacecraftMass * mass / (distance * distance);
+        const acceleration = force / mass;
+        deltaV = acceleration * duration;
+      } else if (selectedMethod === 'laser') {
+        const power = parseFloat(document.getElementById('laserPower').value) * 1e6;
+        const duration = parseFloat(document.getElementById('duration').value) * 365.25 * 24 * 3600;
+        const thrust = power / (3e8 * 0.5);
+        const acceleration = thrust / mass;
+        deltaV = acceleration * duration;
+      } else if (selectedMethod === 'nuclear') {
+        const yieldMT = parseFloat(document.getElementById('yieldMT').value) * 4.184e15;
+        const distance = parseFloat(document.getElementById('detonationDist').value);
+        const efficiency = distance === 0 ? 0.1 : 0.01;
+        const momentum = Math.sqrt(2 * mass * yieldMT * efficiency);
+        deltaV = momentum / mass;
+      }
+      
+      // Apply visual effect
+      showMitigationEffect(selectedMethod);
+      
+      // Calculate new trajectory
+      modifiedPositions = asteroidPositions.map((pos, i) => {
+        const t = i / asteroidPositions.length;
+        const deflection = deltaV * t * 1e5;
+        return {
+          date: pos.date,
+          time_jd: pos.time_jd,
+          x: pos.x + deflection * 0.01,
+          y: pos.y + deflection * 0.005,
+          z: pos.z + deflection * 0.008
+        };
+      });
+      
+      // Draw modified orbit
+      if (modifiedPositions.length > 0) {
+        const modPoints = modifiedPositions.map(p => {
+          const pos = scale3D(p.x, p.y, p.z);
+          return new THREE.Vector3(pos.x, pos.y, pos.z);
+        });
+        modifiedOrbitLine.geometry.dispose();
+        modifiedOrbitLine.geometry = new THREE.BufferGeometry().setFromPoints(modPoints);
+        modifiedOrbitLine.visible = true;
+      }
+      
+      mitigationApplied = true;
+      
+      // Calculate results
+      const originalProb = 0.001;
+      const newProb = originalProb * 0.01;
+      const deflectionKm = (deltaV * 1e5).toFixed(0);
+      
+      document.getElementById('probBefore').textContent = originalProb + '%';
+      document.getElementById('probAfter').textContent = newProb.toFixed(5) + '%';
+      document.getElementById('deflection').textContent = '+' + deflectionKm.toLocaleString() + ' km';
+      document.getElementById('impactProb').textContent = newProb.toFixed(5) + '%';
+      document.getElementById('probBar').style.width = (newProb / 0.01 * 100) + '%';
+      
+      document.getElementById('resultPanel').classList.add('visible');
+      
+      setTimeout(() => {
+        document.getElementById('resultPanel').classList.remove('visible');
+      }, 8000);
+    });
+
+    // Visual effects for each method
+    function showMitigationEffect(method) {
+      const overlay = document.getElementById('effectOverlay');
+      
+      if (method === 'kinetic') {
+        // Show impact flash
+        overlay.innerHTML = '<div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100px; height: 100px; background: radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(255,100,0,0) 70%); animation: explosion 0.5s ease-out;"></div>';
+        setTimeout(() => overlay.innerHTML = '', 600);
+      } else if (method === 'gravity') {
+        // Show spacecraft
+        const spacecraft = document.createElement('div');
+        spacecraft.style.cssText = 'position: absolute; top: 45%; left: 50%; font-size: 40px; animation: pulse 2s infinite;';
+        spacecraft.textContent = '🛸';
+        overlay.appendChild(spacecraft);
+        setTimeout(() => overlay.innerHTML = '', 3000);
+      } else if (method === 'laser') {
+        // Show laser beam
+        overlay.innerHTML = '<div style="position: absolute; top: 20%; left: 50%; width: 4px; height: 30%; background: linear-gradient(180deg, rgba(255,0,0,0) 0%, rgba(255,0,0,1) 50%, rgba(255,100,0,1) 100%); transform: translateX(-50%); animation: laser-beam 2s ease-in-out;"></div>';
+        setTimeout(() => overlay.innerHTML = '', 2500);
+      } else if (method === 'nuclear') {
+        // Show nuclear explosion
+        overlay.innerHTML = '<div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 200px; height: 200px; background: radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(255,150,0,0.8) 40%, rgba(255,0,0,0) 70%); animation: explosion 1s ease-out;"></div>';
+        setTimeout(() => overlay.innerHTML = '', 1200);
+      }
+    }
+
+    // Load data with fallback
+    fetch('static/js/planet_positions_2025_2100.json')
+      .then(res => res.json())
+      .then(data => {
+        planetPositions = data;
+        drawOrbits();
+        updatePositions();
+      })
+      .catch(() => {
+        // Fallback
+        for (let day = 0; day < 365 * 76; day++) {
+          const date = new Date(2025, 0, 1 + day);
+          const dateStr = date.toISOString().split('T')[0];
+          const angle = (day / 365.25) * Math.PI * 2;
+          planetPositions[dateStr] = {
+            Earth: { x: Math.cos(angle) * 1.0, y: 0, z: Math.sin(angle) * 1.0 }
+          };
+        }
+        drawOrbits();
+        updatePositions();
+      });
+
+    fetch('static/js/pha_positions_async.json')
+      .then(res => res.json())
+      .then(data => {
+        const ast = data.find(a => String(a.id) === String(asteroidData.id));
+        if (ast) {
+          asteroidPositions = ast.positions;
+          drawOrbits();
+          updatePositions();
+        }
+      })
+      .catch(() => {
+        // Fallback elliptical orbit
+        for (let day = 0; day < 365 * 76; day++) {
+          const date = new Date(2025, 0, 1 + day);
+          const dateStr = date.toISOString().split('T')[0];
+          const angle = (day / 550) * Math.PI * 2;
+          const a = 1.458, e = 0.223;
+          const r = a * (1 - e*e) / (1 + e * Math.cos(angle));
+          asteroidPositions.push({
+            date: dateStr,
+            time_jd: 2451545 + day,
+            x: r * Math.cos(angle),
+            y: 0,
+            z: r * Math.sin(angle) * 0.8
+          });
+        }
+        drawOrbits();
+        updatePositions();
+      });
+
+    // Controls
+    document.getElementById('playBtn').addEventListener('click', () => {
+      playing = !playing;
+      document.getElementById('playBtn').textContent = playing ? '⏸ Pause' : '▶ Play';
+    });
+
+    document.getElementById('speedBtn').addEventListener('click', () => {
+      speed *= 2;
+      if (speed > 16) speed = 1;
+      document.getElementById('speedBtn').textContent = '⚡ Speed x' + speed;
+    });
+
+    // Mouse controls
+    renderer.domElement.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      previousMousePosition = { x: e.clientX, y: e.clientY };
+    });
+
+    renderer.domElement.addEventListener('mousemove', (e) => {
+      if (isDragging) {
+        const deltaX = e.clientX - previousMousePosition.x;
+        const deltaY = e.clientY - previousMousePosition.y;
+        cameraRotation.theta -= deltaX * 0.005;
+        cameraRotation.phi -= deltaY * 0.005;
+        cameraRotation.phi = Math.max(0.1, Math.min(Math.PI - 0.1, cameraRotation.phi));
+        previousMousePosition = { x: e.clientX, y: e.clientY };
+      }
+    });
+
+    renderer.domElement.addEventListener('mouseup', () => isDragging = false);
+
+    renderer.domElement.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      cameraDistance += e.deltaY * 0.5;
+      cameraDistance = Math.max(100, Math.min(2000, cameraDistance));
+    });
+
+    function updateCamera() {
+      camera.position.x = cameraDistance * Math.sin(cameraRotation.phi) * Math.cos(cameraRotation.theta);
+      camera.position.y = cameraDistance * Math.cos(cameraRotation.phi);
+      camera.position.z = cameraDistance * Math.sin(cameraRotation.phi) * Math.sin(cameraRotation.theta);
+      camera.lookAt(0, 0, 0);
+    }
+
+    const startDate = new Date(2025, 0, 1);
+    const endDate = new Date(2100, 11, 31);
+
+    function animate() {
+      requestAnimationFrame(animate);
+
+      if (playing) {
+        for (let i = 0; i < speed; i++) {
+          currentDate.setDate(currentDate.getDate() + 1);
+          if (currentDate > endDate) currentDate = new Date(startDate);
+        }
+        updatePositions();
+      }
+
+      updateCamera();
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    document.getElementById('backBtn').onclick = () => window.history.back();
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  </script>
+</body>
+</html>

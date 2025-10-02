@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Custom Asteroid Calculation</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<style>
+    html, body { margin: 0; padding: 0; height: 100%; font-family: 'Segoe UI', sans-serif; }
+    #map { flex: 1; height: 70%; }
+    #dataPanel {
+        padding: 15px;
+        background: #111;
+        color: white;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    .info-row { display: flex; justify-content: space-between; align-items: center; }
+    select { padding: 5px; border-radius: 5px; border: none; background: #222; color: #fff; }
+    button {
+        margin-top: 10px;
+        padding: 12px;
+        font-size: 14px;
+        font-weight: bold;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+    #loadingOverlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.7);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+    }
+    
+    #loadingVideo {
+        width: 100%;       /* take full width */
+        height: 100%;      /* take full height */
+        object-fit: cover; /* fill screen without distortion */
+    }
+    
+    
+    #calculateBtn { background: linear-gradient(135deg, #667eea, #764ba2); }
+    #calculateBtn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(102,126,234,0.5); }
+    #goBackBtn { background: linear-gradient(135deg, #ff7e5f, #feb47b); }
+    #goBackBtn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(255,126,95,0.5); }
+    #typeInfo { font-size: 14px; color: #aaa; margin-top: 5px; }
+</style>
+</head>
+<body>
+
+<div id="dataPanel">
+    <div class="info-row"><strong>Radius (m):</strong> <span id="radius"></span></div>
+    <div class="info-row"><strong>Velocity (km/s):</strong> <span id="velocity"></span></div>
+    <div class="info-row"><strong>Inclination (°):</strong> <span id="inclination"></span></div>
+    <div class="info-row">
+        <strong>Density / Type:</strong>
+        <select id="densitySelect"></select>
+    </div>
+    <div id="typeInfo"></div>
+    <div class="info-row"><strong>Selected Lat/Lon:</strong> <span id="latlon">None</span></div>
+    <button id="calculateBtn">Calculate</button>
+    <button id="goBackBtn">Go Back</button>
+</div>
+<!-- Loading overlay -->
+<div id="loadingOverlay">
+    <video autoplay loop muted id="loadingVideo">
+        <source src="{{ url_for('static', filename='videos/asteroidimpact.mp4') }}" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    
+</div>
+
+
+
+
+<div id="map"></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+    // Predefined asteroid types
+    const asteroidTypes = [
+        { name: "C-type", density: 1500, strength: 1e6, desc: "Carbonaceous, dark, primitive." },
+        { name: "S-type", density: 3000, strength: 5e6, desc: "Silicaceous (stony)." },
+        { name: "M-type", density: 7800, strength: 1e7, desc: "Metallic (iron/nickel)." },
+        { name: "P-type", density: 2000, strength: 1.2e6, desc: "Primitive, low albedo." }
+    ];
+
+    const densitySelect = document.getElementById("densitySelect");
+    const typeInfo = document.getElementById("typeInfo");
+
+    asteroidTypes.forEach((type, index) => {
+        const opt = document.createElement("option");
+        opt.value = index;
+        opt.text = `${type.name} (${type.density} kg/m³)`;
+        densitySelect.add(opt);
+    });
+
+    densitySelect.addEventListener("change", () => {
+        const selected = asteroidTypes[densitySelect.value];
+        typeInfo.textContent = `${selected.desc}`;
+    });
+
+    densitySelect.dispatchEvent(new Event("change"));
+
+    // Get asteroid data
+    const asteroidData = JSON.parse(localStorage.getItem("Tocalculatecustom"));
+    if (!asteroidData) alert("No asteroid data found.");
+    else {
+        document.getElementById("radius").textContent = asteroidData.avg_radius_m.toFixed(2);
+        document.getElementById("velocity").textContent = asteroidData.avg_relative_velocity_earth_kms.toFixed(2);
+        document.getElementById("inclination").textContent = asteroidData.inclination_deg;
+    }
+
+    // Initialize map
+    const map = L.map('map').setView([0, 0], 2);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    let selectedLat = null, selectedLon = null, marker = null;
+
+    // Map click
+    map.on('click', e => {
+        selectedLat = e.latlng.lat;
+        selectedLon = e.latlng.lng;
+        document.getElementById('latlon').textContent = `${selectedLat.toFixed(4)}, ${selectedLon.toFixed(4)}`;
+        if (marker) marker.setLatLng(e.latlng);
+        else marker = L.marker(e.latlng).addTo(map);
+    });
+
+    function getRandomLatLon() {
+        return [
+            parseFloat((Math.random() * 180 - 90).toFixed(4)),
+            parseFloat((Math.random() * 360 - 180).toFixed(4))
+        ];
+    }
+
+    function sendPayloadToBackend(payload) {
+        fetch("/customcalculate", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "same-origin",
+            body: JSON.stringify(payload)
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log("Server response:", data);
+            window.location.href = "/customresult";
+        })
+        .catch(error => {
+            console.error("Error sending data:", error);
+            alert("Failed to send data to backend!");
+        });
+    }
+
+    // Calculate button
+    document.getElementById("calculateBtn").addEventListener("click", () => {
+        const overlay = document.getElementById("loadingOverlay");
+        const loadingVideo = document.getElementById("loadingVideo");
+    
+        // 1️⃣ Show overlay first
+        overlay.style.display = "flex";
+        loadingVideo.currentTime = 0;
+        loadingVideo.play();
+    
+        // Small delay to allow browser to render overlay before sending fetch
+        setTimeout(() => {
+            if (!selectedLat || !selectedLon) [selectedLat, selectedLon] = getRandomLatLon();
+            const selectedType = asteroidTypes[densitySelect.value];
+            const payload = {
+                asteroid: asteroidData,
+                density: selectedType.density,
+                materialStrength: selectedType.strength,
+                typeName: selectedType.name,
+                description: selectedType.desc,
+                lat: selectedLat,
+                lon: selectedLon
+            };
+    
+            // Send payload to backend
+            fetch("/customcalculate", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                credentials: "same-origin",
+                body: JSON.stringify(payload)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Server response:", data);
+    
+                // Wait until video metadata is loaded to get the duration
+                const playVideoAndRedirect = () => {
+                    const duration = loadingVideo.duration * 1000;
+                    setTimeout(() => {
+                        overlay.style.display = "none";
+                        window.location.href = "/customresult";
+                    }, duration);
+                };
+    
+                if (loadingVideo.readyState >= 1) playVideoAndRedirect();
+                else loadingVideo.addEventListener("loadedmetadata", playVideoAndRedirect, { once: true });
+            })
+            .catch(error => {
+                console.error("Error sending data:", error);
+                overlay.style.display = "none";
+                alert("Failed to send data to backend!");
+            });
+        }, 50); // 50ms delay is enough for the overlay to render
+    });
+    
+    
+    
+
+    // Go back button
+    document.getElementById("goBackBtn").addEventListener("click", () => {
+        window.history.back();
+    });
+</script>
+
+</body>
+</html>

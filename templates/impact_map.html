@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Asteroid Impact Simulator</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<style>
+html, body { height: 100%; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+body { display: flex; background: #121212; color: #fff; }
+#sidebar { width: 350px; background: #1f1f1f; padding: 20px; box-sizing: border-box; overflow-y: auto; }
+#map { flex: 1; height: 100vh; }
+
+h2 { color: #ff9800; margin-bottom: 15px; text-align: center; }
+
+label { display: block; margin-top: 15px; font-weight: bold; }
+input[type=range], input[type=number], select { width: 100%; margin-top: 5px; padding: 5px; border-radius: 5px; border: none; }
+input[type=range]::-webkit-slider-thumb { background: orange; }
+button { width: 100%; padding: 12px; margin-top: 20px; background: orange; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+button:hover { background: darkorange; }
+
+#asteroidInfo { margin-top: 15px; padding: 10px; border-radius: 8px; background: linear-gradient(135deg, #03a9f4, #0288d1); color: #fff; }
+
+#warningMsg { 
+  color: #ff5252; 
+  background: rgba(255, 82, 82, 0.1);
+  padding: 10px;
+  margin-top: 10px; 
+  border-radius: 5px;
+  border-left: 3px solid #ff5252;
+  display: none;
+  font-size: 14px;
+}
+#loadingOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+#loadingVideo {
+    width: 100%;       /* take full width */
+    height: 100%;      /* take full height */
+    object-fit: cover; /* fill screen without distortion */
+}
+</style>
+</head>
+<body>
+    <div id="loadingOverlay">
+        <video autoplay loop muted id="loadingVideo">
+            <source src="{{ url_for('static', filename='videos/asteroidimpact.mp4') }}" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        
+    </div>
+<div id="sidebar">
+  <h2>Asteroid Parameters</h2>
+
+  <label>Asteroid Type:</label>
+  <select id="asteroidType">
+    <option value="C">C-type (Carbonaceous)</option>
+    <option value="S">S-type (Silicaceous)</option>
+    <option value="M">M-type (Metallic)</option>
+    <option value="D">D-type (Dark, primitive)</option>
+    <option value="V">V-type (Vesta-like)</option>
+    <option value="E">E-type (Enstatite)</option>
+    <option value="P">P-type (Primitive, low albedo)</option>
+    <option value="Q">Q-type (Ordinary chondrite-like)</option>
+    <option value="R">R-type (Rare, stony)</option>
+    <option value="T">T-type (Primitive, low density)</option>
+    <option value="custom">Custom Density</option>
+  </select>
+
+  <label>Density (kg/m³): <span id="densityValue">2000</span></label>
+  <input type="number" id="density" min="1000" max="8000" value="2000">
+
+  <label>Radius (m): <span id="radiusValue">50</span></label>
+  <input type="range" id="radius" min="25" max="1200" step="25" value="50">
+
+  <label>Velocity (km/s): <span id="velocityValue">12</span></label>
+  <input type="range" id="velocity" min="5" max="100" step="1" value="12">
+
+  <label>Impact Angle (°): <span id="angleValue">90</span></label>
+  <input type="range" id="angle" min="30" max="90" step="1" value="90">
+
+  <div id="asteroidInfo">
+    <strong>Type Info:</strong> Carbonaceous, dark, primitive.
+  </div>
+
+  <div id="warningMsg"></div>
+
+  <button id="calculateBtn">Calculate Impact</button>
+  <button id="goBackBtn">Go Back</button>
+
+</div>
+
+<div id="map"></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const defaultLat = 20, defaultLon = 0;
+    const map = L.map('map').setView([defaultLat, defaultLon], 2);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; OpenStreetMap &copy; CARTO',
+        subdomains: 'abcd', maxZoom: 19
+    }).addTo(map);
+
+    let marker = L.marker([defaultLat, defaultLon]).addTo(map)
+        .bindPopup(`<b>Impact Point</b><br>Lat: ${defaultLat}, Lon: ${defaultLon}`)
+        .openPopup();
+
+    const radiusInput = document.getElementById('radius');
+    const densityInput = document.getElementById('density');
+    const velocityInput = document.getElementById('velocity');
+    const angleInput = document.getElementById('angle');
+    const calculateBtn = document.getElementById('calculateBtn');
+    const asteroidTypeSelect = document.getElementById('asteroidType');
+    const densityValue = document.getElementById('densityValue');
+    const radiusValue = document.getElementById('radiusValue');
+    const velocityValue = document.getElementById('velocityValue');
+    const angleValue = document.getElementById('angleValue');
+    const asteroidInfo = document.getElementById('asteroidInfo');
+    const warningMsg = document.getElementById('warningMsg');
+
+    // Type-density-strength map
+    const typeMap = {
+        "C": { density: 1500, strength: 1e6, desc: "Carbonaceous, dark, primitive." },
+        "S": { density: 3000, strength: 5e6, desc: "Silicaceous (stony)." },
+        "M": { density: 7800, strength: 1e7, desc: "Metallic (iron/nickel)."},
+        "D": { density: 1600, strength: 0.8e6, desc: "D-type, dark, primitive, low albedo." },
+        "V": { density: 3300, strength: 6e6, desc: "V-type (Vesta-like), basaltic, stony." },
+        "E": { density: 3500, strength: 7e6, desc: "E-type (Enstatite), bright, stony." },
+        "P": { density: 2000, strength: 1.2e6, desc: "P-type, primitive, low albedo." },
+        "Q": { density: 3000, strength: 5e6, desc: "Q-type, ordinary chondrite-like." },
+        "R": { density: 3500, strength: 6.5e6, desc: "R-type, rare stony asteroid." },
+        "T": { density: 1800, strength: 1e6, desc: "T-type, primitive, low-density." }
+    };
+
+    // Update display values
+    radiusInput.oninput = () => radiusValue.innerText = radiusInput.value;
+    velocityInput.oninput = () => velocityValue.innerText = velocityInput.value;
+    angleInput.oninput = () => angleValue.innerText = angleInput.value;
+
+    densityInput.oninput = () => {
+        densityValue.innerText = densityInput.value;
+        let closestType = null;
+        let minDiff = Infinity;
+        for (const [key, val] of Object.entries(typeMap)) {
+            let diff = Math.abs(val.density - Number(densityInput.value));
+            if(diff < minDiff) { minDiff = diff; closestType = key; }
+        }
+        asteroidTypeSelect.value = "custom";
+        asteroidInfo.innerHTML = `<strong>Closest Asteroid Type:</strong> ${closestType} <br> ${typeMap[closestType].desc}`;
+    
+        // --- ADD THIS BLOCK ---
+        if(Number(densityInput.value) > 8000) {
+            warningMsg.innerText = "⚠️ Density cannot exceed 8,000 kg/m³. Please adjust your input.";
+            warningMsg.style.display = "block";
+        } else if(Number(densityInput.value) < 1500) {
+            warningMsg.innerText = "⚠️ Density is unusually low (below 1,500 kg/m³). Such low-density asteroids are extremely rare!";
+            warningMsg.style.display = "block";
+        } else {
+            warningMsg.style.display = "none";
+        }
+        // --- END BLOCK ---
+    };
+
+    asteroidTypeSelect.onchange = () => {
+        const type = asteroidTypeSelect.value;
+        if (type !== "custom") {
+            densityInput.value = typeMap[type].density;
+            densityValue.innerText = typeMap[type].density;
+            asteroidInfo.innerHTML = `<strong>Type Info:</strong> ${typeMap[type].desc}`;
+        } else {
+            asteroidInfo.innerHTML = `<strong>Type Info:</strong> Custom density selected. Closest type will be inferred.`;
+        }
+    };
+
+    // Map click
+    let lastLat = defaultLat, lastLon = defaultLon;
+    map.on('click', e => {
+        lastLat = e.latlng.lat.toFixed(4);
+        lastLon = e.latlng.lng.toFixed(4);
+        marker.setLatLng([lastLat, lastLon])
+              .setPopupContent(`<b>Impact Point</b><br>Lat: ${lastLat}, Lon: ${lastLon}`)
+              .openPopup();
+    });
+
+    // Calculate button
+    calculateBtn.addEventListener('click', async () => {
+        const density = Number(densityInput.value);
+    
+        if (density > 8000) {
+            warningMsg.innerText = "⚠️ Density cannot exceed 8,000 kg/m³. Please adjust your input.";
+            warningMsg.style.display = "block";
+            return;
+        }else if (density < 1500) {
+            warningMsg.innerText = "⚠️ Density is unusually low (below 1,500 kg/m³). Such low-density asteroids are extremely rare!";
+            warningMsg.style.display = "block";
+            return;
+        } else {
+            warningMsg.style.display = "none";
+        }
+        let selectedType = asteroidTypeSelect.value;
+        let materialStrength;
+    
+        if(selectedType === "custom") {
+            let closestType = null, minDiff = Infinity;
+            for(const [key, val] of Object.entries(typeMap)){
+                let diff = Math.abs(val.density - density);
+                if(diff < minDiff){ minDiff = diff; closestType = key; }
+            }
+            selectedType = closestType;
+            materialStrength = typeMap[closestType].strength;
+        } else {
+            materialStrength = typeMap[selectedType].strength;
+        }
+    
+        const params = {
+            radius: Math.min(Number(radiusInput.value), 10000),
+            density: Math.min(density, 10000),
+            velocity: Math.min(Number(velocityInput.value), 10000),
+            angle: Number(angleInput.value),
+            asteroidType: selectedType,
+            materialStrength: materialStrength,
+            lat: lastLat,
+            lon: lastLon
+        };
+    
+        console.log("Asteroid params:", params);
+    
+        // ----- Show overlay and play video -----
+        const overlay = document.getElementById("loadingOverlay");
+        const loadingVideo = document.getElementById("loadingVideo");
+        overlay.style.display = "flex";
+        loadingVideo.currentTime = 0;
+        loadingVideo.play();
+    
+        // Small delay to allow browser to render overlay
+        setTimeout(async () => {
+            try {
+                const response = await fetch('/get-asteroid-data', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(params)
+                });
+    
+                if (!response.ok) throw new Error(`Server error: ${response.status}`);
+    
+                const result = await response.json();
+                console.log("Server response:", result);
+    
+                // Optionally show success message
+                warningMsg.style.display = "block";
+                warningMsg.style.color = "#44ff44";
+                warningMsg.style.borderLeftColor = "#44ff44";
+                warningMsg.style.background = "rgba(68, 255, 68, 0.1)";
+    
+                // Wait until video ends before redirecting
+                const redirectAfterVideo = () => {
+                    const duration = loadingVideo.duration * 1000;
+                    setTimeout(() => {
+                        overlay.style.display = "none";
+                        window.location.href = "/calculation";
+                    }, duration);
+                };
+    
+                if (loadingVideo.readyState >= 1) {
+                    redirectAfterVideo();
+                } else {
+                    loadingVideo.addEventListener("loadedmetadata", redirectAfterVideo, { once: true });
+                }
+    
+            } catch (err) {
+                console.error("Failed to send data:", err);
+                overlay.style.display = "none";
+                warningMsg.innerText = "❌ Failed to send data to server.";
+                warningMsg.style.display = "block";
+            }
+        }, 50); // 50ms delay ensures overlay renders first
+    });
+    
+    
+});
+document.getElementById('goBackBtn').addEventListener('click', () => {
+    window.history.back();
+});
+
+</script>
+
+</body>
+</html>
