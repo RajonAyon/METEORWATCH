@@ -8,20 +8,43 @@ import pyproj
 import math
 from rasterio.mask import mask # Correct import statement
 
-raster_path = "data/ppp_2020_1km_Aggregated.tif"
+# -------------------------------
+# File paths
+# -------------------------------
+tif_path = "data/ppp_2020_1km_Aggregated.tif"
+pha_json_path = "static/js/pha_positions_async.json"
+planet_json_path = "static/js/planet_positions_2025_2100.json"
 
-# Download from Google Drive if missing
-if not os.path.exists(raster_path):
-    print("Downloading dataset from Google Drive...")
-    os.makedirs("data", exist_ok=True)
-    url = "https://drive.google.com/uc?id=1wGJp2HlgmLNueAWEFP4VGNv1RvEaxFZK"
-    r = requests.get(url, stream=True)
-    with open(raster_path, "wb") as f:
-        for chunk in r.iter_content(chunk_size=8192):
-            f.write(chunk)
-    print("Download complete!")
+# -------------------------------
+# Google Drive direct download URLs
+# -------------------------------
+tif_url = "https://drive.google.com/uc?id=1wGJp2HlgmLNueAWEFP4VGNv1RvEaxFZK"
+pha_url = "https://drive.google.com/uc?id=1tiGxzxLO95ZN3wjhT7h6Buo4EIRbUPtx"
+planet_url = "https://drive.google.com/uc?id=181nkB6yWPF3MV9hG-UFQ9URVIW0voLfg"
 
+# -------------------------------
+# Helper function to download files
+# -------------------------------
+def download_file(url, path):
+    if not os.path.exists(path):
+        print(f"Downloading {path} from Google Drive...")
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        r = requests.get(url, stream=True)
+        with open(path, "wb") as f:
+            for chunk in r.iter_content(chunk_size=8192):
+                f.write(chunk)
+        print(f"Download complete: {path}")
 
+# -------------------------------
+# Download all necessary files
+# -------------------------------
+def download_all_files():
+    download_file(tif_url, tif_path)
+    download_file(pha_url, pha_json_path)
+    download_file(planet_url, planet_json_path)
+
+# Run immediately when imported
+download_all_files()
 
 
 
