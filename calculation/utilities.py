@@ -8,6 +8,8 @@ import pyproj
 import math
 from rasterio.mask import mask # Correct import statement
 
+import gdown
+
 # -------------------------------
 # File paths
 # -------------------------------
@@ -16,32 +18,30 @@ pha_json_path = "static/js/pha_positions_async.json"
 planet_json_path = "static/js/planet_positions_2025_2100.json"
 
 # -------------------------------
-# Google Drive direct download URLs
+# Google Drive file IDs
 # -------------------------------
-tif_url = "https://drive.google.com/uc?id=1wGJp2HlgmLNueAWEFP4VGNv1RvEaxFZK"
-pha_url = "https://drive.google.com/uc?id=1tiGxzxLO95ZN3wjhT7h6Buo4EIRbUPtx"
-planet_url = "https://drive.google.com/uc?id=181nkB6yWPF3MV9hG-UFQ9URVIW0voLfg"
+tif_id = "1wGJp2HlgmLNueAWEFP4VGNv1RvEaxFZK"
+pha_id = "1tiGxzxLO95ZN3wjhT7h6Buo4EIRbUPtx"
+planet_id = "181nkB6yWPF3MV9hG-UFQ9URVIW0voLfg"
 
 # -------------------------------
-# Helper function to download files
+# Helper function to download files via gdown
 # -------------------------------
-def download_file(url, path):
+def download_file(file_id, path):
     if not os.path.exists(path):
         print(f"Downloading {path} from Google Drive...")
         os.makedirs(os.path.dirname(path), exist_ok=True)
-        r = requests.get(url, stream=True)
-        with open(path, "wb") as f:
-            for chunk in r.iter_content(chunk_size=8192):
-                f.write(chunk)
+        url = f"https://drive.google.com/uc?id={file_id}"
+        gdown.download(url, path, quiet=False)
         print(f"Download complete: {path}")
 
 # -------------------------------
 # Download all necessary files
 # -------------------------------
 def download_all_files():
-    download_file(tif_url, tif_path)
-    download_file(pha_url, pha_json_path)
-    download_file(planet_url, planet_json_path)
+    download_file(tif_id, tif_path)
+    download_file(pha_id, pha_json_path)
+    download_file(planet_id, planet_json_path)
 
 # Run immediately when imported
 download_all_files()
