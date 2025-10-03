@@ -4870,6 +4870,33 @@ window.window.createInfoButton = function(title, content) {
 
 
 
+function willCauseGlobalEffects(asteroidData) {
+    if (!asteroidData) return false;
+    
+    const r_m = asteroidData.radius; // meters
+    const rho = asteroidData.density; // kg/m³
+    const v = asteroidData.velocity * 1000; // convert km/s to m/s
+    const m = (4/3) * Math.PI * Math.pow(r_m, 3) * rho; // kg
+    const E_joules = 0.5 * m * v * v;
+    const E_megatons = E_joules / 4.184e15;
+    
+    // Thresholds for global effects:
+    // - Energy > 1000 MT for detectable climate effects
+    // - Momentum ratio > 1e-9 for orbital effects
+    // - Angular momentum ratio > 1e-6 for rotation effects
+    const EARTH_MASS = 5.972e24;
+    const EARTH_ORBITAL_VELOCITY = 29780;
+    const EARTH_ANGULAR_MOMENTUM = 7.08e33;
+    const EARTH_RADIUS = 6.371e6;
+    
+    const momentum_ratio = (m * v) / (EARTH_MASS * EARTH_ORBITAL_VELOCITY);
+    const angular_momentum_ratio = (m * v * EARTH_RADIUS) / EARTH_ANGULAR_MOMENTUM;
+    
+    // Return true if ANY global effect is significant
+    return E_megatons > 1000 || 
+           Math.abs(momentum_ratio) > 1e-6 || 
+           Math.abs(angular_momentum_ratio) > 1e-6;
+}
 async function generateGlobalEffectsContent() {
     if (!asteroidData) return "<p>Loading data...</p>";
     
@@ -4911,6 +4938,23 @@ async function generateGlobalEffectsContent() {
         });
     
         return;
+    }
+
+    // NEW: Check if global effects are significant
+    if (!willCauseGlobalEffects(asteroidData)) {
+        return `
+        <div style="background: linear-gradient(135deg, #27ae60 0%, #229954 100%); padding: 20px; border-radius: 10px; margin-bottom: 20px; border: 3px solid #2ecc71; text-align: center;">
+            <h2 style="margin: 0 0 15px 0; color: white; font-size: 1.8em;">✅ NO GLOBAL EFFECTS</h2>
+            <p style="color: white; font-size: 1.1em; margin: 0;">
+                This asteroid is too small to cause detectable global effects.<br>
+                Damage will be <b>localized to the impact region only</b>.
+            </p>
+            <p style="color: rgba(255,255,255,0.8); font-size: 0.9em; margin-top: 10px;">
+                Energy: ${((0.5 * ((4/3) * Math.PI * Math.pow(asteroidData.radius, 3) * asteroidData.density) * Math.pow(asteroidData.velocity * 1000, 2)) / 4.184e15).toFixed(2)} MT TNT<br>
+                (Threshold for global effects: >1000 MT)
+            </p>
+        </div>
+        `;
     }
 
     // ========== PHYSICAL CONSTANTS ==========
@@ -5057,604 +5101,610 @@ async function generateGlobalEffectsContent() {
     // Source: Toon et al. (1997) "Environmental perturbations caused by impacts"
     
     // Ejecta mass (empirical from nuclear cratering studies)
+    // ========== ATMOSPHERIC EFFECTS ==========
+    const latitude = window.asteroidData?.lat ?? 0;
+
+    // Ejecta mass (empirical from nuclear cratering studies)
     const ejecta_mass = crater_volume * target_density * 1.5; // kg (includes fragmented material)
-    
-    // Dust lofted into atmosphere (typically 1-10% of ejecta)
-    const dust_fraction = E_megatons > 1e6 ? 0.1 : 0.05;
+
+    // Adjust dust lofting by latitude: less dust reaches poles
+    const latitude_factor = 0.3 + 0.7 * (1 - Math.abs(latitude) / 90);
+    const base_dust_fraction = E_megatons > 1e6 ? 0.1 : 0.05;
+    const dust_fraction = base_dust_fraction * latitude_factor;
     const dust_mass = ejecta_mass * dust_fraction; // kg
-    
+
     // Optical depth (Toon et al. 1997)
     const particle_size = 1e-6; // m (1 micron - optimal for light blocking)
     const extinction_coefficient = 7500; // m²/kg for 1 micron particles
     const column_density = dust_mass / EARTH_SURFACE_AREA; // kg/m²
-    const optical_depth = Math.min(column_density * extinction_coefficient, 1000);
-    
+    const optical_depth = Math.min(column_density * extinction_coefficient, 10);
+
     // Darkness duration (e-folding time ~ months to years)
     const settling_time = 180; // days for 1 optical depth to settle
-    const darkness_duration = optical_depth * settling_time; // days
-    
+    const darkness_duration = optical_depth * settling_time // days
+
     // Temperature drop (Covey et al. 1994)
     const max_cooling = 25; // °C maximum for global dust cloud
-    const temp_drop = Math.min(optical_depth * 5, max_cooling); // °C
+    const temp_drop = Math.min(optical_depth * 5, max_cooling) ; // °C
     const cooling_duration_years = Math.sqrt(E_megatons / 1000); // years
-    
+
     // ========== CHEMICAL EFFECTS ==========
-    // Source: Pope et al. (1997) "Impact winter and the Cretaceous/Tertiary extinctions"
-    
-    // Sulfur release (depends on target rock - assuming 10% sulfur-bearing minerals)
-    const sulfur_fraction = 0.1;
+    const sulfur_fraction = 0.1; // Fraction of sulfur-bearing rock
     const vaporized_rock = E_joules / 5e6; // kg (5 MJ/kg vaporization energy)
-    const SO2_mass = vaporized_rock * sulfur_fraction * (64/32); // kg (S to SO2 conversion)
-    
-    // Acid rain pH (simplified model)
+    const SO2_mass = vaporized_rock * sulfur_fraction * (64/32); // kg (S → SO2)
+
     const ocean_volume = 1.335e18; // m³
     const SO2_dissolved_fraction = 0.3;
     const H2SO4_concentration = (SO2_mass * SO2_dissolved_fraction * (98/64)) / ocean_volume; // kg/m³
-    const pH_drop = Math.min(Math.log10(H2SO4_concentration * 10), 3);
-    const acid_rain_pH = Math.max(5.6 - pH_drop, 1); // normal rain pH is 5.6
-    
-    // Nitrogen oxides from shock heating
-    const NOx_mass = E_joules / 1e10; // kg (rough approximation)
-    
-    // Ozone depletion (NOx catalytic destruction)
-    const ozone_depletion_percent = Math.min((NOx_mass / 1e13) * 50, 95);
-    const ozone_recovery_time = ozone_depletion_percent * 2; // years
-    
-    // ========== THERMAL EFFECTS ==========
-    // Source: Melosh et al. (1990) "Ignition of global wildfires"
-    
-    // Fireball radius (Glasstone & Dolan 1977)
-    const fireball_radius = 440 * Math.pow(E_megatons, 0.4); // meters
-    
-    // Thermal radiation (35% of total energy)
-    const thermal_energy = E_joules * 0.35; // joules
-    
-    // Critical thermal flux for ignition: 20 J/cm² (dry grass/leaves)
-    const ignition_flux = 20 * 1e4; // J/m²
-    const thermal_radius = Math.sqrt(thermal_energy / (4 * Math.PI * ignition_flux)); // meters
-    const wildfire_area = Math.PI * Math.pow(thermal_radius, 2); // m²
-    const wildfire_percent = Math.min((wildfire_area / EARTH_SURFACE_AREA) * 100, 100);
-    
-    // Soot injection into stratosphere
-    const forest_coverage = 0.31; // 31% of land is forested
-    const land_area = EARTH_SURFACE_AREA * 0.29; // 29% of Earth is land
-    const burned_forest_area = wildfire_area * forest_coverage;
-    const soot_per_area = 15; // kg/m² (typical for forest fires)
-    const soot_mass = burned_forest_area * soot_per_area; // kg
-    
-    // ========== MASS EXTINCTION ==========
-    // Source: Raup & Sepkoski (1982) "Mass extinctions in the marine fossil record"
-    
-    let extinction_probability, extinction_level;
-    if (E_megatons < 10) {
-        extinction_probability = 0;
-        extinction_level = "No extinctions";
-    } else if (E_megatons < 1000) {
-        extinction_probability = 5;
-        extinction_level = "Local species loss";
-    } else if (E_megatons < 1e4) {
-        extinction_probability = 20;
-        extinction_level = "Regional extinctions";
-    } else if (E_megatons < 1e6) {
-        extinction_probability = 50;
-        extinction_level = "Major mass extinction (>30% species)";
-    } else if (E_megatons < 1e8) {
-        extinction_probability = 75;
-        extinction_level = "Severe mass extinction (>60% species)";
-    } else {
-        extinction_probability = 95;
-        extinction_level = "Near-total extinction (>90% species)";
-    }
-    
-    // Chicxulub comparison (66 Mya, killed dinosaurs)
-    const chicxulub_energy = 1e8; // MT
-    const chicxulub_ratio = E_megatons / chicxulub_energy;
-    
-    // ========== HTML OUTPUT ==========
-    return `
-    <style>
-        .info-btn:hover {
-            background: #2980b9 !important;
-            transform: scale(1.1);
-        }
-    </style>
+    const pH_drop = Math.min(Math.log10(Math.max(H2SO4_concentration * 10, 1e-12)), 3); // prevent negative or NaN
+    const acid_rain_pH = Math.max(5.6 - pH_drop, 1);
 
-    <div style="background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%); padding: 20px; border-radius: 10px; margin-bottom: 20px; border: 3px solid #6c5ce7;">
-        <h2 style="margin: 0 0 15px 0; color: #00d4ff; text-align: center; font-size: 1.8em;">🌍 GLOBAL PLANETARY EFFECTS</h2>
-        <p style="text-align: center; color: #aaa; font-size: 0.95em; margin: 0;">
-            Calculations based on peer-reviewed impact physics (Collins 2005, Toon 1997, Melosh 1990)
-        </p>
-    </div>
+        // ========== ATMOSPHERIC & THERMAL EFFECTS ==========
+        const E_megatons_safe = Number(E_megatons) || 0; // ensure it's a number
 
-    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-bottom: 20px;">
-        <div style="background: ${orbital_color}; padding: 15px; border-radius: 8px; text-align: center;">
-            <h3 style="margin: 0 0 10px 0; color: white;">
-                🌐 Orbital Change
-                ${window.createInfoButton('Orbital Info', 'Based on conservation of linear momentum. Source: Korycansky et al. 2001')}
-            </h3>
-            <div style="font-size: 1.3em; font-weight: bold; color: white; margin-bottom: 8px;">
-                ${orbital_effect}
-            </div>
-            <div style="font-size: 0.85em; color: rgba(255,255,255,0.9);">
-                Momentum ratio: ${momentum_ratio.toExponential(2)}
-            </div>
-        </div>
-        
-        <div style="background: ${rotation_color}; padding: 15px; border-radius: 8px; text-align: center;">
-            <h3 style="margin: 0 0 10px 0; color: white;">
-                🔄 Rotation Change
-                ${window.createInfoButton('Rotation Info', 'Based on conservation of angular momentum. Maximum effect assumed for perpendicular impact.')}
-            </h3>
-            <div style="font-size: 1.3em; font-weight: bold; color: white; margin-bottom: 8px;">
-                ${rotation_effect}
-            </div>
-            <div style="font-size: 0.85em; color: rgba(255,255,255,0.9);">
-                Angular momentum ratio: ${angular_momentum_ratio.toExponential(2)}
-            </div>
-        </div>
-        
-        <div style="background: ${disruption_color}; padding: 15px; border-radius: 8px; text-align: center;">
-            <h3 style="margin: 0 0 10px 0; color: white;">
-                💥 Structural Integrity
-                ${window.createInfoButton('Crater Info', 'Transient crater size from Holsapple (1993) scaling laws. Final crater is ~1.3x larger after slumping.')}
-            </h3>
-            <div style="font-size: 1.3em; font-weight: bold; color: white; margin-bottom: 8px;">
-                ${disruption_effect}
-            </div>
-            <div style="font-size: 0.85em; color: rgba(255,255,255,0.9);">
-                Volume ratio: ${volume_ratio.toExponential(2)}
-            </div>
-        </div>
-    </div>
+        // -------- Nitrogen Oxides and Ozone --------
+        // Nitrogen oxides from shock heating (rough approximation)
+        const NOx_mass = E_joules / 1e10; // kg
 
-    <!-- ORBITAL DETAILS -->
-    <div class="info-section" style="background: #1a1a2e; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-        <h3 style="margin: 0 0 10px 0; color: #6c5ce7;">
-            🌍 Earth's Orbital Dynamics
-            ${window.createInfoButton('Source', 'Korycansky, Laughlin & Adams (2001): Deflection and fragmentation of near-Earth asteroids')}
-        </h3>
-        <div style="background: rgba(108,92,231,0.1); padding: 12px; border-radius: 6px; border-left: 3px solid ${orbital_color};">
-            <b style="color: ${orbital_color};">${orbital_effect}:</b> ${orbital_description}<br><br>
-            <b>Impactor Momentum:</b> ${formatLargeNumberWords(impactor_momentum)} kg·m/s<br>
-            <b>Earth Orbital Momentum:</b> ${formatLargeNumberWords(earth_orbital_momentum)} kg·m/s<br>
-            <b>Velocity Change (Δv):</b> ${delta_v_orbital.toExponential(2)} m/s<br>
-            <b>Orbital Distance Change:</b> ${formatMetric(delta_a)} m (${(Math.abs(delta_a)/1000).toFixed(0)} km)<br><br>
-            ${Math.abs(momentum_ratio) >= 1e-6 ? `
-                <b style="color: #e74c3c;">⚠️ Orbital Consequences:</b><br>
-                • Semi-major axis shift: ${(delta_a/1000).toFixed(0)} km<br>
-                • Year length change: ~${(delta_a / semi_major_axis * 365.25).toFixed(3)} days<br>
-                • Average temperature change: ~${(delta_a / semi_major_axis * 30).toFixed(2)}°C<br>
-                • Climate zone migration: ${Math.abs(delta_a/1000).toFixed(0)} km poleward/equatorward
-            ` : `
-                <b style="color: #27ae60;">✓ Orbit Stable:</b><br>
-                Earth maintains its 149.6 million km orbit. Seasons and climate unchanged.
-            `}
-        </div>
-    </div>
+        // Ozone depletion (%), limited to max 95%
+        const ozone_depletion_percent = Math.min((NOx_mass / 1e13) * 50, 95);
 
-    <!-- ROTATION DETAILS -->
-    <div class="info-section" style="background: #1a1a2e; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-        <h3 style="margin: 0 0 10px 0; color: #e67e22;">
-            🔄 Earth's Rotation & Day Length
-            ${window.createInfoButton('Source', 'Harris & D\'Abramo (2015): The population of near-Earth asteroids. Assumes maximum angular momentum transfer.')}
-        </h3>
-        <div style="background: rgba(230,126,34,0.1); padding: 12px; border-radius: 6px; border-left: 3px solid ${rotation_color};">
-            <b style="color: ${rotation_color};">${rotation_effect}:</b> ${rotation_description}<br><br>
-            <b>Impact Angular Momentum:</b> ${formatLargeNumberWords(impact_angular_momentum)} kg·m²/s<br>
-            <b>Earth's Rotational Angular Momentum:</b> ${formatLargeNumberWords(EARTH_ANGULAR_MOMENTUM)} kg·m²/s<br>
-            <b>Day Length Change:</b> ${Math.abs(day_change * 60).toFixed(2)} minutes (${Math.abs(day_change).toFixed(4)} hours)<br>
-            <b>New Day Length:</b> ${(new_day_length / 3600).toFixed(4)} hours<br><br>
-            ${Math.abs(angular_momentum_ratio) >= 1e-3 ? `
-                <b style="color: #e74c3c;">⚠️ Rotational Consequences:</b><br>
-                • Coriolis effect modified - weather patterns change<br>
-                • Tidal patterns disrupted<br>
-                • Circadian rhythms of life desynchronized<br>
-                • Seasons ${Math.abs(angular_momentum_ratio) > 0.01 ? 'fundamentally altered' : 'slightly modified'}
-            ` : `
-                <b style="color: #27ae60;">✓ Rotation Stable:</b><br>
-                The 24-hour day remains unchanged. Clocks need no adjustment.
-            `}
-        </div>
-    </div>
+        // Estimated recovery time in years (simplified)
+        const ozone_recovery_time = ozone_depletion_percent * 2; // years
 
-    <!-- CRATER DETAILS -->
-    <div class="info-section" style="background: #1a1a2e; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-        <h3 style="margin: 0 0 10px 0; color: #c0392b;">
-            💥 Crater Formation & Structural Damage
-            ${window.createInfoButton('Source', 'Collins et al. (2005) Earth Impact Effects Program; Holsapple (1993) scaling laws')}
-        </h3>
-        <div style="background: rgba(192,57,43,0.1); padding: 12px; border-radius: 6px; border-left: 3px solid ${disruption_color};">
-            <b style="color: ${disruption_color};">${disruption_effect}:</b> ${disruption_description}<br><br>
-            <b>Transient Crater Diameter:</b> ${(D_tr/1000).toFixed(2)} km<br>
-            <b>Final Crater Diameter:</b> ${(D_final/1000).toFixed(2)} km<br>
-            <b>Crater Depth:</b> ${(crater_depth/1000).toFixed(2)} km<br>
-            <b>Crater Volume:</b> ${formatLargeNumberWords(crater_volume)} m³<br>
-            <b>Excavated Mass:</b> ${formatLargeNumberWords(ejecta_mass)} kg<br>
-            <b>Comparison:</b> ${(D_final/12742).toFixed(4)}% of Earth's diameter<br><br>
-            ${volume_ratio > 1e-6 ? `
-                <b style="color: #e74c3c;">⚠️ Geological Consequences:</b><br>
-                • ${crater_depth > 35000 ? 'Mantle exposed' : 'Crust penetrated to ' + (crater_depth/1000).toFixed(1) + ' km depth'}<br>
-                • Global seismic waves (magnitude ${(Math.log10(E_joules) - 4.8).toFixed(1)} earthquake)<br>
-                • ${(ejecta_mass / EARTH_MASS * 100).toExponential(2)}% of Earth's mass ejected<br>
-                • Crater rim height: ~${(D_final * 0.05 / 1000).toFixed(2)} km above surroundings
-            ` : `
-                <b>Local cratering only - planetary structure intact</b>
-            `}
-        </div>
-    </div>
+        // -------- Thermal Effects and Wildfires --------
+        // Fireball radius (Glasstone & Dolan 1977)
+        const fireball_radius = 440 * Math.pow(E_megatons_safe, 0.4); // meters
 
-    <!-- ATMOSPHERIC EFFECTS -->
-    <div class="info-section" style="background: linear-gradient(135deg, #141e30 0%, #243b55 100%); padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #3498db;">
-        <h3 style="margin: 0 0 10px 0; color: #3498db;">
-            ☁️ Atmospheric & Climate Effects
-            ${window.createInfoButton('Source', 'Toon et al. (1997) Environmental perturbations caused by impacts; Covey et al. (1994) climate models')}
-        </h3>
-        
-        <div style="background: rgba(52,152,219,0.1); padding: 12px; border-radius: 6px; margin-bottom: 10px;">
-            <h4 style="margin: 0 0 8px 0; color: #3498db;">🌫️ Impact Winter & Dust Loading</h4>
-            <b>Ejecta Lofted:</b> ${formatLargeNumberWords(ejecta_mass)} kg<br>
-            <b>Atmospheric Dust:</b> ${formatLargeNumberWords(dust_mass)} kg<br>
-            <b>Optical Depth:</b> ${optical_depth.toFixed(2)} (0=transparent, 1=opaque)<br>
-            <b>Sunlight Reduction:</b> ${(100 - 100 * Math.exp(-optical_depth)).toFixed(1)}%<br>
-            <b>Darkness Duration:</b> ${darkness_duration.toFixed(0)} days (${(darkness_duration/365).toFixed(1)} years)<br>
-            <b>Temperature Drop:</b> -${temp_drop.toFixed(1)}°C globally<br>
-            <b>Cooling Duration:</b> ${cooling_duration_years.toFixed(1)} years<br><br>
-            ${optical_depth > 1 ? `
-                <b style="color: #e74c3c;">⚠️ Impact Winter Scenario:</b><br>
-                • Photosynthesis ceases - plants die<br>
-                • Food chains collapse from bottom up<br>
-                • Global famine - billions of human deaths<br>
-                • Freezing temperatures even at equator<br>
-                • ${darkness_duration > 365 ? 'Multi-year darkness' : 'Months of darkness'}
-            ` : `
-                <b>Limited atmospheric disruption</b>
-            `}
-        </div>
+        // Thermal energy (35% of total kinetic energy)
+        const thermal_energy = E_joules * 0.35; // joules
 
-        <div style="background: rgba(52,152,219,0.1); padding: 12px; border-radius: 6px; margin-bottom: 10px;">
-            <h4 style="margin: 0 0 8px 0; color: #e74c3c;">
-                🌧️ Acid Rain & Chemical Contamination
-                ${window.createInfoButton('Source', 'Pope et al. (1997) Impact winter and Cretaceous/Tertiary extinctions')}
-            </h4>
-            <b>Sulfur Dioxide (SO₂):</b> ${formatLargeNumberWords(SO2_mass)} kg<br>
-            <b>Nitrogen Oxides (NOx):</b> ${formatLargeNumberWords(NOx_mass)} kg<br>
-            <b>Acid Rain pH:</b> ${acid_rain_pH.toFixed(2)} (normal: 5.6, distilled water: 7.0)<br>
-            <b>Ozone Depletion:</b> ${ozone_depletion_percent.toFixed(1)}% destroyed<br>
-            <b>UV Radiation Increase:</b> ${(ozone_depletion_percent * 2).toFixed(0)}% at surface<br>
-            <b>Recovery Time:</b> ${ozone_recovery_time.toFixed(0)} years<br><br>
-            ${acid_rain_pH < 4 ? `
-                <b style="color: #e74c3c;">⚠️ Extreme Chemical Warfare:</b><br>
-                • Acid rain kills forests and crops<br>
-                • Lakes and rivers acidified - aquatic die-off<br>
-                • Soil fertility destroyed for decades<br>
-                • UV radiation causes skin cancer, blindness<br>
-                • DNA damage to all surface organisms
-            ` : acid_rain_pH < 5 ? `
-                <b style="color: #f39c12;">Moderate Chemical Effects:</b><br>
-                • Sensitive ecosystems damaged<br>
-                • Crop yields reduced by ${(100 - acid_rain_pH * 20).toFixed(0)}%
-            ` : `
-                <b>Minimal chemical contamination</b>
-            `}
-        </div>
+        // Critical thermal flux for ignition: 20 J/cm² for dry vegetation
+        const ignition_flux = 20 * 1e4; // J/m²
 
-        <div style="background: rgba(52,152,219,0.1); padding: 12px; border-radius: 6px;">
-            <h4 style="margin: 0 0 8px 0; color: #e67e22;">
-                🔥 Global Wildfires
-                ${window.createInfoButton('Source', 'Melosh et al. (1990) Ignition of global wildfires at the K/T boundary')}
-            </h4>
-            <b>Thermal Radius:</b> ${(thermal_radius/1000).toFixed(0)} km<br>
-            <b>Ignition Area:</b> ${formatLargeNumberWords(wildfire_area)} m² (${wildfire_percent.toFixed(3)}% of Earth)<br>
-            <b>Soot Produced:</b> ${formatLargeNumberWords(soot_mass)} kg<br>
-            <b>Additional Cooling:</b> ${Math.min(soot_mass / 1e12, 10).toFixed(1)}°C from soot<br><br>
-            ${wildfire_percent > 1 ? `
-                <b style="color: #e67e22;">⚠️ Continental-Scale Firestorm:</b><br>
-                • ${(wildfire_percent * 510).toFixed(0)} million km² ignited<br>
-                • Oxygen levels drop from 21% to ${(21 - wildfire_percent * 0.5).toFixed(1)}%<br>
-                • CO₂ spike causes greenhouse warming after dust settles<br>
-                • Stratospheric soot blocks sun for years (nuclear winter effect)
-            ` : wildfire_percent > 0.01 ? `
-                <b>Regional wildfires - smoke visible globally</b>
-            ` : `
-                <b>Localized fires only</b>
-            `}
-        </div>
-    </div>
+        // Radius around impact receiving enough heat to ignite fires
+        const thermal_radius = Math.sqrt(thermal_energy / (4 * Math.PI * ignition_flux)); // meters
 
-    <!-- MASS EXTINCTION -->
-    <div class="info-section" style="background: linear-gradient(135deg, #8b0000 0%, #4a0000 100%); padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 3px solid #ff0000;">
-        <h3 style="margin: 0 0 10px 0; color: #ff6b6b;">
-            ☠️ Mass Extinction Risk Analysis
-            ${window.createInfoButton('Source', 'Raup & Sepkoski (1982) Mass extinctions in the fossil record; Alvarez et al. (1980) K-T boundary')}
-        </h3>
-        <div style="background: rgba(255,0,0,0.2); padding: 15px; border-radius: 6px;">
-            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 15px; margin-bottom: 15px;">
-                <div>
-                    <b style="font-size: 1.1em; color: #ff6b6b;">Extinction Severity:</b><br>
-                    <span style="font-size: 1.3em; color: white;">${extinction_level}</span><br><br>
-                    <b>Impact Energy:</b> ${E_megatons.toExponential(2)} MT TNT<br>
-                    <b>Chicxulub Comparison:</b> ${chicxulub_ratio.toExponential(2)}× the dinosaur killer<br>
-                    <b>Estimated Species Loss:</b> ${extinction_probability > 50 ? `${extinction_probability}% of all species` : `${extinction_probability}% locally`}
+        // Area affected by thermal radiation
+        const wildfire_area = Math.PI * Math.pow(thermal_radius, 2); // m²
+
+        // Percentage of Earth's surface affected
+        const wildfire_percent = Math.min((wildfire_area / EARTH_SURFACE_AREA) * 100, 100);
+
+        // -------- Soot Injection into Stratosphere --------
+        const land_fraction = 0.29; // 29% of Earth's surface is land
+        const forest_fraction = 0.31; // 31% of land is forested
+
+        // Burned forest area in m²
+        const burned_forest_area = wildfire_area * land_fraction * forest_fraction;
+
+        // Typical soot mass per m² from forest fires (kg/m²)
+        const soot_per_area = 15;
+
+        // Total soot injected into the stratosphere
+        const soot_mass = burned_forest_area * soot_per_area; // kg
+
+
+
+                
+                // ========== MASS EXTINCTION ==========
+                // Source: Raup & Sepkoski (1982) "Mass extinctions in the marine fossil record"
+                
+                let extinction_probability, extinction_level;
+                if (E_megatons < 10) {
+                    extinction_probability = 0;
+                    extinction_level = "No extinctions";
+                } else if (E_megatons < 1000) {
+                    extinction_probability = 5;
+                    extinction_level = "Local species loss";
+                } else if (E_megatons < 1e4) {
+                    extinction_probability = 20;
+                    extinction_level = "Regional extinctions";
+                } else if (E_megatons < 1e6) {
+                    extinction_probability = 50;
+                    extinction_level = "Major mass extinction (>30% species)";
+                } else if (E_megatons < 1e8) {
+                    extinction_probability = 75;
+                    extinction_level = "Severe mass extinction (>60% species)";
+                } else {
+                    extinction_probability = 95;
+                    extinction_level = "Near-total extinction (>90% species)";
+                }
+                
+                // Chicxulub comparison (66 Mya, killed dinosaurs)
+                const chicxulub_energy = 1e8; // MT
+                const chicxulub_ratio = E_megatons / chicxulub_energy;
+                
+                // ========== HTML OUTPUT ==========
+                return `
+                <style>
+                    .info-btn:hover {
+                        background: #2980b9 !important;
+                        transform: scale(1.1);
+                    }
+                </style>
+
+                <div style="background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%); padding: 20px; border-radius: 10px; margin-bottom: 20px; border: 3px solid #6c5ce7;">
+                    <h2 style="margin: 0 0 15px 0; color: #00d4ff; text-align: center; font-size: 1.8em;">🌍 GLOBAL PLANETARY EFFECTS</h2>
+                    <p style="text-align: center; color: #aaa; font-size: 0.95em; margin: 0;">
+                        Calculations based on peer-reviewed impact physics (Collins 2005, Toon 1997, Melosh 1990)
+                    </p>
                 </div>
-                <div style="text-align: center;">
-                    <div style="width: 120px; height: 120px; border-radius: 50%; border: 8px solid #ff0000; display: flex; align-items: center; justify-content: center; margin: 0 auto; background: radial-gradient(circle, #ff0000 0%, #8b0000 100%);">
-                        <span style="font-size: 2.5em; font-weight: bold; color: white;">${extinction_probability}%</span>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+                    <div style="background: ${orbital_color}; padding: 15px; border-radius: 8px; text-align: center;">
+                        <h3 style="margin: 0 0 10px 0; color: white;">
+                            🌐 Orbital Change
+                            ${window.createInfoButton('Orbital Info', 'Based on conservation of linear momentum. Source: Korycansky et al. 2001')}
+                        </h3>
+                        <div style="font-size: 1.3em; font-weight: bold; color: white; margin-bottom: 8px;">
+                            ${orbital_effect}
+                        </div>
+                        <div style="font-size: 0.85em; color: rgba(255,255,255,0.9);">
+                            Momentum ratio: ${momentum_ratio.toExponential(2)}
+                        </div>
                     </div>
-                    <div style="margin-top: 10px; font-size: 0.85em;">Extinction Risk</div>
+                    
+                    <div style="background: ${rotation_color}; padding: 15px; border-radius: 8px; text-align: center;">
+                        <h3 style="margin: 0 0 10px 0; color: white;">
+                            🔄 Rotation Change
+                            ${window.createInfoButton('Rotation Info', 'Based on conservation of angular momentum. Maximum effect assumed for perpendicular impact.')}
+                        </h3>
+                        <div style="font-size: 1.3em; font-weight: bold; color: white; margin-bottom: 8px;">
+                            ${rotation_effect}
+                        </div>
+                        <div style="font-size: 0.85em; color: rgba(255,255,255,0.9);">
+                            Angular momentum ratio: ${angular_momentum_ratio.toExponential(2)}
+                        </div>
+                    </div>
+                    
+                    <div style="background: ${disruption_color}; padding: 15px; border-radius: 8px; text-align: center;">
+                        <h3 style="margin: 0 0 10px 0; color: white;">
+                            💥 Structural Integrity
+                            ${window.createInfoButton('Crater Info', 'Transient crater size from Holsapple (1993) scaling laws. Final crater is ~1.3x larger after slumping.')}
+                        </h3>
+                        <div style="font-size: 1.3em; font-weight: bold; color: white; margin-bottom: 8px;">
+                            ${disruption_effect}
+                        </div>
+                        <div style="font-size: 0.85em; color: rgba(255,255,255,0.9);">
+                            Volume ratio: ${volume_ratio.toExponential(2)}
+                        </div>
+                    </div>
                 </div>
-            </div>
+
+                <!-- ORBITAL DETAILS -->
+                <div class="info-section" style="background: #1a1a2e; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                    <h3 style="margin: 0 0 10px 0; color: #6c5ce7;">
+                        🌍 Earth's Orbital Dynamics
+                        ${window.createInfoButton('Source', 'Korycansky, Laughlin & Adams (2001): Deflection and fragmentation of near-Earth asteroids')}
+                    </h3>
+                    <div style="background: rgba(108,92,231,0.1); padding: 12px; border-radius: 6px; border-left: 3px solid ${orbital_color};">
+                        <b style="color: ${orbital_color};">${orbital_effect}:</b> ${orbital_description}<br><br>
+                        <b>Impactor Momentum:</b> ${formatLargeNumberWords(impactor_momentum)} kg·m/s<br>
+                        <b>Earth Orbital Momentum:</b> ${formatLargeNumberWords(earth_orbital_momentum)} kg·m/s<br>
+                        <b>Velocity Change (Δv):</b> ${delta_v_orbital.toExponential(2)} m/s<br>
+                        <b>Orbital Distance Change:</b> ${formatMetric(delta_a)} m (${(Math.abs(delta_a)/1000).toFixed(0)} km)<br><br>
+                        ${Math.abs(momentum_ratio) >= 1e-6 ? `
+                            <b style="color: #e74c3c;">⚠️ Orbital Consequences:</b><br>
+                            • Semi-major axis shift: ${(delta_a/1000).toFixed(0)} km<br>
+                            • Year length change: ~${(delta_a / semi_major_axis * 365.25).toFixed(3)} days<br>
+                            • Average temperature change: ~${(delta_a / semi_major_axis * 30).toFixed(2)}°C<br>
+                            • Climate zone migration: ${Math.abs(delta_a/1000).toFixed(0)} km poleward/equatorward
+                        ` : `
+                            <b style="color: #27ae60;">✓ Orbit Stable:</b><br>
+                            Earth maintains its 149.6 million km orbit. Seasons and climate unchanged.
+                        `}
+                    </div>
+                </div>
+
+                <!-- ROTATION DETAILS -->
+                <div class="info-section" style="background: #1a1a2e; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                    <h3 style="margin: 0 0 10px 0; color: #e67e22;">
+                        🔄 Earth's Rotation & Day Length
+                        ${window.createInfoButton('Source', 'Harris & D\'Abramo (2015): The population of near-Earth asteroids. Assumes maximum angular momentum transfer.')}
+                    </h3>
+                    <div style="background: rgba(230,126,34,0.1); padding: 12px; border-radius: 6px; border-left: 3px solid ${rotation_color};">
+                        <b style="color: ${rotation_color};">${rotation_effect}:</b> ${rotation_description}<br><br>
+                        <b>Impact Angular Momentum:</b> ${formatLargeNumberWords(impact_angular_momentum)} kg·m²/s<br>
+                        <b>Earth's Rotational Angular Momentum:</b> ${formatLargeNumberWords(EARTH_ANGULAR_MOMENTUM)} kg·m²/s<br>
+                        <b>Day Length Change:</b> ${Math.abs(day_change * 60).toFixed(2)} minutes (${Math.abs(day_change).toFixed(4)} hours)<br>
+                        <b>New Day Length:</b> ${(new_day_length / 3600).toFixed(4)} hours<br><br>
+                        ${Math.abs(angular_momentum_ratio) >= 1e-3 ? `
+                            <b style="color: #e74c3c;">⚠️ Rotational Consequences:</b><br>
+                            • Coriolis effect modified - weather patterns change<br>
+                            • Tidal patterns disrupted<br>
+                            • Circadian rhythms of life desynchronized<br>
+                            • Seasons ${Math.abs(angular_momentum_ratio) > 0.01 ? 'fundamentally altered' : 'slightly modified'}
+                        ` : `
+                            <b style="color: #27ae60;">✓ Rotation Stable:</b><br>
+                            The 24-hour day remains unchanged. Clocks need no adjustment.
+                        `}
+                    </div>
+                </div>
+
             
-            <b style="color: #ff6b6b;">Kill Mechanisms:</b>
-            <ul style="margin: 8px 0; padding-left: 20px; line-height: 1.7;">
-                <li><b>Direct Impact:</b> Everything within ${(D_final/2000).toFixed(0)} km vaporized</li>
-                <li><b>Impact Winter:</b> ${darkness_duration > 365 ? `${(darkness_duration/365).toFixed(1)} years` : `${darkness_duration.toFixed(0)} days`} of darkness → photosynthesis stops</li>
-                <li><b>Starvation:</b> Food chains collapse - herbivores die in months, predators within a year</li>
-                <li><b>Acid Rain:</b> pH ${acid_rain_pH.toFixed(1)} kills ${acid_rain_pH < 3 ? 'most' : 'sensitive'} plants and aquatic life</li>
-                <li><b>UV Radiation:</b> ${ozone_depletion_percent.toFixed(0)}% ozone loss = lethal surface exposure</li>
-                <li><b>Temperature Shock:</b> -${temp_drop.toFixed(0)}°C then +${(temp_drop * 0.5).toFixed(0)}°C rebound kills adapted species</li>
-                <li><b>Wildfires:</b> ${wildfire_percent.toFixed(1)}% of surface burned</li>
-            </ul>
-            
-            ${extinction_probability >= 75 ? `
-                <div style="background: rgba(0,0,0,0.4); padding: 10px; border-radius: 5px; margin-top: 10px; border-left: 3px solid #ff0000;">
-                    <b style="color: #ff0000;">⚠️ PLANETARY CATASTROPHE</b><br>
-                    This impact equals or exceeds the K-Pg extinction (66 Mya) that killed the dinosaurs.<br><br>
-                    <b>Expected Casualties:</b><br>
-                    • Humans: ~${Math.min(extinction_probability, 99.9)}% (${(8e9 * extinction_probability / 100).toExponential(2)} people)<br>
-                    • Large mammals: ${Math.min(extinction_probability + 5, 100)}%<br>
-                    • Plants: ${Math.max(extinction_probability - 20, 0)}%<br>
-                    • Marine life: ${Math.max(extinction_probability - 10, 0)}%<br>
-                    • Insects: ${Math.max(extinction_probability - 30, 0)}%<br>
-                    • Bacteria: ${Math.max(extinction_probability - 60, 5)}%<br><br>
-                    <b>Recovery:</b> ${(extinction_probability / 5).toFixed(0)} million years for biodiversity restoration
+
+                <!-- ATMOSPHERIC EFFECTS -->
+                <div class="info-section" style="background: linear-gradient(135deg, #141e30 0%, #243b55 100%); padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #3498db;">
+                    <h3 style="margin: 0 0 10px 0; color: #3498db;">
+                        ☁️ Atmospheric & Climate Effects
+                        ${window.createInfoButton('Source', 'Toon et al. (1997) Environmental perturbations caused by impacts; Covey et al. (1994) climate models')}
+                    </h3>
+                    
+                    <div style="background: rgba(52,152,219,0.1); padding: 12px; border-radius: 6px; margin-bottom: 10px;">
+                        <h4 style="margin: 0 0 8px 0; color: #3498db;">🌫️ Impact Winter & Dust Loading</h4>
+                        <b>Ejecta Lofted:</b> ${formatLargeNumberWords(ejecta_mass)} kg<br>
+                        <b>Atmospheric Dust:</b> ${formatLargeNumberWords(dust_mass)} kg<br>
+                        <b>Optical Depth:</b> ${optical_depth.toFixed(2)} (0=transparent, 1=opaque)<br>
+                        <b>Sunlight Reduction:</b> ${(100 - 100 * Math.exp(-optical_depth)).toFixed(1)}%<br>
+                        <b>Darkness Duration:</b> ${darkness_duration.toFixed(0)} days (${(darkness_duration/365).toFixed(1)} years)<br>
+                        <b>Temperature Drop:</b> -${temp_drop.toFixed(1)}°C globally<br>
+                        <b>Cooling Duration:</b> ${cooling_duration_years.toFixed(1)} years<br><br>
+                        ${optical_depth > 1 ? `
+                            <b style="color: #e74c3c;">⚠️ Impact Winter Scenario:</b><br>
+                            • Photosynthesis ceases - plants die<br>
+                            • Food chains collapse from bottom up<br>
+                            • Global famine - billions of human deaths<br>
+                            • Freezing temperatures even at equator<br>
+                            • ${darkness_duration > 365 ? 'Multi-year darkness' : 'Months of darkness'}
+                        ` : `
+                            <b>Limited atmospheric disruption</b>
+                        `}
+                    </div>
+
+                    <div style="background: rgba(52,152,219,0.1); padding: 12px; border-radius: 6px; margin-bottom: 10px;">
+                        <h4 style="margin: 0 0 8px 0; color: #e74c3c;">
+                            🌧️ Acid Rain & Chemical Contamination
+                            ${window.createInfoButton('Source', 'Pope et al. (1997) Impact winter and Cretaceous/Tertiary extinctions')}
+                        </h4>
+                        <b>Sulfur Dioxide (SO₂):</b> ${formatLargeNumberWords(SO2_mass)} kg<br>
+                        <b>Nitrogen Oxides (NOx):</b> ${formatLargeNumberWords(NOx_mass)} kg<br>
+                        <b>Acid Rain pH:</b> ${acid_rain_pH.toFixed(2)} (normal: 5.6, distilled water: 7.0)<br>
+                        <b>Ozone Depletion:</b> ${ozone_depletion_percent.toFixed(1)}% destroyed<br>
+                        <b>UV Radiation Increase:</b> ${(ozone_depletion_percent * 2).toFixed(0)}% at surface<br>
+                        <b>Recovery Time:</b> ${ozone_recovery_time.toFixed(0)} years<br><br>
+                        ${acid_rain_pH < 4 ? `
+                            <b style="color: #e74c3c;">⚠️ Extreme Chemical Warfare:</b><br>
+                            • Acid rain kills forests and crops<br>
+                            • Lakes and rivers acidified - aquatic die-off<br>
+                            • Soil fertility destroyed for decades<br>
+                            • UV radiation causes skin cancer, blindness<br>
+                            • DNA damage to all surface organisms
+                        ` : acid_rain_pH < 5 ? `
+                            <b style="color: #f39c12;">Moderate Chemical Effects:</b><br>
+                            • Sensitive ecosystems damaged<br>
+                            • Crop yields reduced by ${(100 - acid_rain_pH * 20).toFixed(0)}%
+                        ` : `
+                            <b>Minimal chemical contamination</b>
+                        `}
+                    </div>
+
+                    <div style="background: rgba(52,152,219,0.1); padding: 12px; border-radius: 6px;">
+                        <h4 style="margin: 0 0 8px 0; color: #e67e22;">
+                            🔥 Global Wildfires
+                            ${window.createInfoButton('Source', 'Melosh et al. (1990) Ignition of global wildfires at the K/T boundary')}
+                        </h4>
+                        <b>Thermal Radius:</b> ${(thermal_radius/1000).toFixed(0)} km<br>
+                        <b>Ignition Area:</b> ${formatLargeNumberWords(wildfire_area)} m² (${wildfire_percent.toFixed(3)}% of Earth)<br>
+                        <b>Soot Produced:</b> ${formatLargeNumberWords(soot_mass)} kg<br>
+                        <b>Additional Cooling:</b> ${Math.min(soot_mass / 1e12, 10).toFixed(1)}°C from soot<br><br>
+                        ${wildfire_percent > 1 ? `
+                            <b style="color: #e67e22;">⚠️ Continental-Scale Firestorm:</b><br>
+                            • ${(wildfire_percent * 510).toFixed(0)} million km² ignited<br>
+                            • Oxygen levels drop from 21% to ${(21 - wildfire_percent * 0.5).toFixed(1)}%<br>
+                            • CO₂ spike causes greenhouse warming after dust settles<br>
+                            • Stratospheric soot blocks sun for years (nuclear winter effect)
+                        ` : wildfire_percent > 0.01 ? `
+                            <b>Regional wildfires - smoke visible globally</b>
+                        ` : `
+                            <b>Localized fires only</b>
+                        `}
+                    </div>
                 </div>
-            ` : extinction_probability >= 20 ? `
-                <div style="background: rgba(0,0,0,0.4); padding: 10px; border-radius: 5px; margin-top: 10px; border-left: 3px solid #f39c12;">
-                    <b style="color: #f39c12;">⚠️ MASS EXTINCTION EVENT</b><br>
-                    Comparable to the Permian-Triassic (252 Mya) or Late Devonian (375 Mya) extinctions.<br>
-                    Human civilization likely collapses. Recovery takes millions of years.
+
+                <!-- MASS EXTINCTION -->
+                <div class="info-section" style="background: linear-gradient(135deg, #8b0000 0%, #4a0000 100%); padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 3px solid #ff0000;">
+                    <h3 style="margin: 0 0 10px 0; color: #ff6b6b;">
+                        ☠️ Mass Extinction Risk Analysis
+                        ${window.createInfoButton('Source', 'Raup & Sepkoski (1982) Mass extinctions in the fossil record; Alvarez et al. (1980) K-T boundary')}
+                    </h3>
+                    <div style="background: rgba(255,0,0,0.2); padding: 15px; border-radius: 6px;">
+                        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 15px; margin-bottom: 15px;">
+                            <div>
+                                <b style="font-size: 1.1em; color: #ff6b6b;">Extinction Severity:</b><br>
+                                <span style="font-size: 1.3em; color: white;">${extinction_level}</span><br><br>
+                                <b>Impact Energy:</b> ${E_megatons.toExponential(2)} MT TNT<br>
+                                <b>Chicxulub Comparison:</b> ${chicxulub_ratio.toExponential(2)}× the dinosaur killer<br>
+                                <b>Estimated Species Loss:</b> ${extinction_probability > 50 ? `${extinction_probability}% of all species` : `${extinction_probability}% locally`}
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="width: 120px; height: 120px; border-radius: 50%; border: 8px solid #ff0000; display: flex; align-items: center; justify-content: center; margin: 0 auto; background: radial-gradient(circle, #ff0000 0%, #8b0000 100%);">
+                                    <span style="font-size: 2.5em; font-weight: bold; color: white;">${extinction_probability}%</span>
+                                </div>
+                                <div style="margin-top: 10px; font-size: 0.85em;">Extinction Risk</div>
+                            </div>
+                        </div>
+                        
+                        <b style="color: #ff6b6b;">Kill Mechanisms:</b>
+                        <ul style="margin: 8px 0; padding-left: 20px; line-height: 1.7;">
+                            <li><b>Direct Impact:</b> Everything within ${(D_final/2000).toFixed(0)} km vaporized</li>
+                            <li><b>Impact Winter:</b> ${darkness_duration > 365 ? `${(darkness_duration/365).toFixed(1)} years` : `${darkness_duration.toFixed(0)} days`} of darkness → photosynthesis stops</li>
+                            <li><b>Starvation:</b> Food chains collapse - herbivores die in months, predators within a year</li>
+                            <li><b>Acid Rain:</b> pH ${acid_rain_pH.toFixed(1)} kills ${acid_rain_pH < 3 ? 'most' : 'sensitive'} plants and aquatic life</li>
+                            <li><b>UV Radiation:</b> ${ozone_depletion_percent.toFixed(0)}% ozone loss = lethal surface exposure</li>
+                            <li><b>Temperature Shock:</b> -${temp_drop.toFixed(0)}°C then +${(temp_drop * 0.5).toFixed(0)}°C rebound kills adapted species</li>
+                            <li><b>Wildfires:</b> ${wildfire_percent.toFixed(1)}% of surface burned</li>
+                        </ul>
+                        
+                        ${extinction_probability >= 75 ? `
+                            <div style="background: rgba(0,0,0,0.4); padding: 10px; border-radius: 5px; margin-top: 10px; border-left: 3px solid #ff0000;">
+                                <b style="color: #ff0000;">⚠️ PLANETARY CATASTROPHE</b><br>
+                                This impact equals or exceeds the K-Pg extinction (66 Mya) that killed the dinosaurs.<br><br>
+                                <b>Expected Casualties:</b><br>
+                                • Humans: ~${Math.min(extinction_probability, 99.9)}% (${(8e9 * extinction_probability / 100).toExponential(2)} people)<br>
+                                • Large mammals: ${Math.min(extinction_probability + 5, 100)}%<br>
+                                • Plants: ${Math.max(extinction_probability - 20, 0)}%<br>
+                                • Marine life: ${Math.max(extinction_probability - 10, 0)}%<br>
+                                • Insects: ${Math.max(extinction_probability - 30, 0)}%<br>
+                                • Bacteria: ${Math.max(extinction_probability - 60, 5)}%<br><br>
+                                <b>Recovery:</b> ${(extinction_probability / 5).toFixed(0)} million years for biodiversity restoration
+                            </div>
+                        ` : extinction_probability >= 20 ? `
+                            <div style="background: rgba(0,0,0,0.4); padding: 10px; border-radius: 5px; margin-top: 10px; border-left: 3px solid #f39c12;">
+                                <b style="color: #f39c12;">⚠️ MASS EXTINCTION EVENT</b><br>
+                                Comparable to the Permian-Triassic (252 Mya) or Late Devonian (375 Mya) extinctions.<br>
+                                Human civilization likely collapses. Recovery takes millions of years.
+                            </div>
+                        ` : ''}
+                    </div>
                 </div>
-            ` : ''}
-        </div>
-    </div>
 
-    <!-- HISTORICAL COMPARISONS -->
-    <div class="info-section" style="background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%); padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-        <h3 style="margin: 0 0 10px 0; color: #00d4ff;">
-            🌍 Historical Impact Comparisons
-            ${window.createInfoButton('Source', 'Earth Impact Database (2013); Grieve & Shoemaker (1994)')}
-        </h3>
-        <table style="width: 100%; font-size: 0.9em; border-collapse: collapse;">
-            <thead>
-                <tr style="background: rgba(0,212,255,0.2); border-bottom: 2px solid #00d4ff;">
-                    <th style="padding: 8px; text-align: left;">Impact Event</th>
-                    <th style="padding: 8px; text-align: center;">Age</th>
-                    <th style="padding: 8px; text-align: center;">Energy (MT)</th>
-                    <th style="padding: 8px; text-align: center;">Crater</th>
-                    <th style="padding: 8px; text-align: left;">Consequences</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr style="background: rgba(108,92,231,0.3); border-bottom: 1px solid #444;">
-                    <td style="padding: 8px;"><b>YOUR IMPACT</b></td>
-                    <td style="padding: 8px; text-align: center;">Today</td>
-                    <td style="padding: 8px; text-align: center;">${E_megatons.toExponential(2)}</td>
-                    <td style="padding: 8px; text-align: center;">${(D_final/1000).toFixed(1)} km</td>
-                    <td style="padding: 8px;"><b>${extinction_level}</b></td>
-                </tr>
-                <tr style="border-bottom: 1px solid #444;">
-                    <td style="padding: 8px;">Tunguska, Russia</td>
-                    <td style="padding: 8px; text-align: center;">1908</td>
-                    <td style="padding: 8px; text-align: center;">10-15</td>
-                    <td style="padding: 8px; text-align: center;">0 (airburst)</td>
-                    <td style="padding: 8px;">2,000 km² forest flattened, 0 deaths</td>
-                </tr>
-                <tr style="border-bottom: 1px solid #444;">
-                    <td style="padding: 8px;">Chelyabinsk, Russia</td>
-                    <td style="padding: 8px; text-align: center;">2013</td>
-                    <td style="padding: 8px; text-align: center;">0.5</td>
-                    <td style="padding: 8px; text-align: center;">0 (airburst)</td>
-                    <td style="padding: 8px;">1,500 injured, windows shattered</td>
-                </tr>
-                <tr style="border-bottom: 1px solid #444;">
-                    <td style="padding: 8px;">Barringer (Meteor Crater)</td>
-                    <td style="padding: 8px; text-align: center;">50,000 ya</td>
-                    <td style="padding: 8px; text-align: center;">10-20</td>
-                    <td style="padding: 8px; text-align: center;">1.2 km</td>
-                    <td style="padding: 8px;">Regional devastation, megafauna killed</td>
-                </tr>
-                <tr style="border-bottom: 1px solid #444;">
-                    <td style="padding: 8px;">Ries Crater, Germany</td>
-                    <td style="padding: 8px; text-align: center;">15 Mya</td>
-                    <td style="padding: 8px; text-align: center;">~2×10⁶</td>
-                    <td style="padding: 8px; text-align: center;">24 km</td>
-                    <td style="padding: 8px;">European climate disrupted</td>
-                </tr>
-                <tr style="border-bottom: 1px solid #444;">
-                    <td style="padding: 8px;">Chicxulub, Mexico</td>
-                    <td style="padding: 8px; text-align: center;">66 Mya</td>
-                    <td style="padding: 8px; text-align: center;">1×10⁸</td>
-                    <td style="padding: 8px; text-align: center;">180 km</td>
-                    <td style="padding: 8px;"><b>Killed dinosaurs - 75% species extinct</b></td>
-                </tr>
-                <tr style="border-bottom: 1px solid #444;">
-                    <td style="padding: 8px;">Sudbury Basin, Canada</td>
-                    <td style="padding: 8px; text-align: center;">1.85 Gya</td>
-                    <td style="padding: 8px; text-align: center;">~1×10⁹</td>
-                    <td style="padding: 8px; text-align: center;">130 km</td>
-                    <td style="padding: 8px;">Second-largest verified impact</td>
-                </tr>
-                <tr style="border-bottom: 1px solid #444;">
-                    <td style="padding: 8px;">Vredefort, South Africa</td>
-                    <td style="padding: 8px; text-align: center;">2.02 Gya</td>
-                    <td style="padding: 8px; text-align: center;">~5×10⁹</td>
-                    <td style="padding: 8px; text-align: center;">300 km</td>
-                    <td style="padding: 8px;"><b>Largest verified impact on Earth</b></td>
-                </tr>
-                <tr>
-                    <td style="padding: 8px;">Theia Impact (Moon-forming)</td>
-                    <td style="padding: 8px; text-align: center;">4.5 Gya</td>
-                    <td style="padding: 8px; text-align: center;">~1×10¹⁴</td>
-                    <td style="padding: 8px; text-align: center;">N/A</td>
-                    <td style="padding: 8px;">Mars-sized object, created Earth's Moon</td>
-                </tr>
-            </tbody>
-        </table>
-        <p style="margin: 10px 0 0 0; font-size: 0.85em; color: #aaa;">
-            <b>Relative magnitude:</b> Your impact is <b>${chicxulub_ratio.toExponential(2)}×</b> the Chicxulub event
-            ${chicxulub_ratio > 1 ? ' (more destructive than the dinosaur killer!)' : 
-              chicxulub_ratio > 0.1 ? ' (comparable to the dinosaur killer)' : 
-              chicxulub_ratio > 0.01 ? ' (could still cause mass extinction)' : ''}
-        </p>
-    </div>
+                <!-- HISTORICAL COMPARISONS -->
+                <div class="info-section" style="background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%); padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                    <h3 style="margin: 0 0 10px 0; color: #00d4ff;">
+                        🌍 Historical Impact Comparisons
+                        ${window.createInfoButton('Source', 'Earth Impact Database (2013); Grieve & Shoemaker (1994)')}
+                    </h3>
+                    <table style="width: 100%; font-size: 0.9em; border-collapse: collapse;">
+                        <thead>
+                            <tr style="background: rgba(0,212,255,0.2); border-bottom: 2px solid #00d4ff;">
+                                <th style="padding: 8px; text-align: left;">Impact Event</th>
+                                <th style="padding: 8px; text-align: center;">Age</th>
+                                <th style="padding: 8px; text-align: center;">Energy (MT)</th>
+                                <th style="padding: 8px; text-align: center;">Crater</th>
+                                <th style="padding: 8px; text-align: left;">Consequences</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="background: rgba(108,92,231,0.3); border-bottom: 1px solid #444;">
+                                <td style="padding: 8px;"><b>YOUR IMPACT</b></td>
+                                <td style="padding: 8px; text-align: center;">Today</td>
+                                <td style="padding: 8px; text-align: center;">${E_megatons.toExponential(2)}</td>
+                                <td style="padding: 8px; text-align: center;">${(D_final/1000).toFixed(1)} km</td>
+                                <td style="padding: 8px;"><b>${extinction_level}</b></td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #444;">
+                                <td style="padding: 8px;">Tunguska, Russia</td>
+                                <td style="padding: 8px; text-align: center;">1908</td>
+                                <td style="padding: 8px; text-align: center;">10-15</td>
+                                <td style="padding: 8px; text-align: center;">0 (airburst)</td>
+                                <td style="padding: 8px;">2,000 km² forest flattened, 0 deaths</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #444;">
+                                <td style="padding: 8px;">Chelyabinsk, Russia</td>
+                                <td style="padding: 8px; text-align: center;">2013</td>
+                                <td style="padding: 8px; text-align: center;">0.5</td>
+                                <td style="padding: 8px; text-align: center;">0 (airburst)</td>
+                                <td style="padding: 8px;">1,500 injured, windows shattered</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #444;">
+                                <td style="padding: 8px;">Barringer (Meteor Crater)</td>
+                                <td style="padding: 8px; text-align: center;">50,000 ya</td>
+                                <td style="padding: 8px; text-align: center;">10-20</td>
+                                <td style="padding: 8px; text-align: center;">1.2 km</td>
+                                <td style="padding: 8px;">Regional devastation, megafauna killed</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #444;">
+                                <td style="padding: 8px;">Ries Crater, Germany</td>
+                                <td style="padding: 8px; text-align: center;">15 Mya</td>
+                                <td style="padding: 8px; text-align: center;">~2×10⁶</td>
+                                <td style="padding: 8px; text-align: center;">24 km</td>
+                                <td style="padding: 8px;">European climate disrupted</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #444;">
+                                <td style="padding: 8px;">Chicxulub, Mexico</td>
+                                <td style="padding: 8px; text-align: center;">66 Mya</td>
+                                <td style="padding: 8px; text-align: center;">1×10⁸</td>
+                                <td style="padding: 8px; text-align: center;">180 km</td>
+                                <td style="padding: 8px;"><b>Killed dinosaurs - 75% species extinct</b></td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #444;">
+                                <td style="padding: 8px;">Sudbury Basin, Canada</td>
+                                <td style="padding: 8px; text-align: center;">1.85 Gya</td>
+                                <td style="padding: 8px; text-align: center;">~1×10⁹</td>
+                                <td style="padding: 8px; text-align: center;">130 km</td>
+                                <td style="padding: 8px;">Second-largest verified impact</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #444;">
+                                <td style="padding: 8px;">Vredefort, South Africa</td>
+                                <td style="padding: 8px; text-align: center;">2.02 Gya</td>
+                                <td style="padding: 8px; text-align: center;">~5×10⁹</td>
+                                <td style="padding: 8px; text-align: center;">300 km</td>
+                                <td style="padding: 8px;"><b>Largest verified impact on Earth</b></td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 8px;">Theia Impact (Moon-forming)</td>
+                                <td style="padding: 8px; text-align: center;">4.5 Gya</td>
+                                <td style="padding: 8px; text-align: center;">~1×10¹⁴</td>
+                                <td style="padding: 8px; text-align: center;">N/A</td>
+                                <td style="padding: 8px;">Mars-sized object, created Earth's Moon</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p style="margin: 10px 0 0 0; font-size: 0.85em; color: #aaa;">
+                        <b>Relative magnitude:</b> Your impact is <b>${chicxulub_ratio.toExponential(2)}×</b> the Chicxulub event
+                        ${chicxulub_ratio > 1 ? ' (more destructive than the dinosaur killer!)' : 
+                        chicxulub_ratio > 0.1 ? ' (comparable to the dinosaur killer)' : 
+                        chicxulub_ratio > 0.01 ? ' (could still cause mass extinction)' : ''}
+                    </p>
+                </div>
 
-    <!-- RECOVERY TIMELINE -->
-    <div class="info-section" style="background: linear-gradient(135deg, #27ae60 0%, #229954 100%); padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 2px solid #2ecc71;">
-        <h3 style="margin: 0 0 10px 0; color: white;">
-            🌱 Post-Impact Recovery Timeline
-            ${window.createInfoButton('Source', 'Jablonski (1995) Extinctions in the fossil record; Erwin (1998) The end and the beginning')}
-        </h3>
-        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; font-size: 0.85em;">
-            <div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 5px; border-left: 3px solid #e74c3c;">
-                <b style="color: white;">Years 0-10:</b><br>
-                <span style="color: #ddd;">
-                ${extinction_probability > 70 ? 
-                    `Impact winter active. ${temp_drop.toFixed(0)}°C cooling. Mass starvation. ${extinction_probability}% species die.` :
-                  extinction_probability > 30 ?
-                    `Regional devastation. Climate disrupted. Major extinctions begin.` :
-                    `Local damage. Ecosystem stress. Limited global impact.`
-                }
-                </span>
-            </div>
-            <div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 5px; border-left: 3px solid #e67e22;">
-                <b style="color: white;">Years 10-100:</b><br>
-                <span style="color: #ddd;">
-                ${extinction_probability > 70 ?
-                    `Dust settles. Greenhouse warming begins. Acid oceans. No megafauna survive.` :
-                  extinction_probability > 30 ?
-                    `Survivors adapt. Food webs rebuild slowly. Climate stabilizing.` :
-                    `Rapid recovery. Ecosystems mostly restored.`
-                }
-                </span>
-            </div>
-            <div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 5px; border-left: 3px solid #f39c12;">
-                <b style="color: white;">Years 100-1,000:</b><br>
-                <span style="color: #ddd;">
-                ${extinction_probability > 70 ?
-                    `Climate normalized. Surviving lineages radiate. New dominant species emerge.` :
-                  extinction_probability > 30 ?
-                    `Biodiversity rebounds. Ecosystems stable. Crater visible landmark.` :
-                    `Full ecological recovery. Only geology remembers.`
-                }
-                </span>
-            </div>
-            <div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 5px; border-left: 3px solid #f1c40f;">
-                <b style="color: white;">1,000-10,000 years:</b><br>
-                <span style="color: #ddd;">
-                ${extinction_probability > 70 ?
-                    `Evolutionary innovations. Forests regrow. New apex predators. Biodiversity 30% of pre-impact.` :
-                  extinction_probability > 30 ?
-                    `Near-complete recovery. Crater eroding. Human myths tell of "the great fire from sky".` :
-                    `Impact crater a tourist site. Local geology altered permanently.`
-                }
-                </span>
-            </div>
-            <div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 5px; border-left: 3px solid #52be80;">
-                <b style="color: white;">10,000 years - 1 Mya:</b><br>
-                <span style="color: #ddd;">
-                ${extinction_probability > 70 ?
-                    `New dominant groups established. Climate fully normalized. Biodiversity 60% restored.` :
-                  extinction_probability > 30 ?
-                    `Complete ecological recovery. Crater barely visible.` :
-                    `Only sediment layers record the impact.`
-                }
-                </span>
-            </div>
-            <div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 5px; border-left: 3px solid #27ae60;">
-                <b style="color: white;">1-10 Million years:</b><br>
-                <span style="color: #ddd;">
-                ${extinction_probability > 70 ?
-                    `Biodiversity equals or exceeds pre-impact. Iridium layer marks the event in rock record.` :
-                  extinction_probability > 30 ?
-                    `Impact layer visible in stratigraphy. Future geologists study it.` :
-                    `Geological footnote. Minor anomaly in fossil record.`
-                }
-                </span>
-            </div>
-        </div>
-        ${extinction_probability > 50 ? `
-            <div style="margin-top: 15px; padding: 12px; background: rgba(0,0,0,0.4); border-radius: 6px; border-left: 3px solid #27ae60;">
-                <b style="color: #2ecc71;">🔬 Recovery Science:</b><br>
-                <span style="color: #ddd; font-size: 0.9em;">
-                After the K-Pg extinction, mammals evolved from small shrews to elephants and whales in just 10 million years.
-                Empty niches drive rapid evolution. Small, adaptable species inherit the Earth. The "disaster taxa" 
-                (ferns, fungi, algae) dominate initially, then complex ecosystems rebuild from the bottom up.
-                </span>
-            </div>
-        ` : ''}
-    </div>
+                <!-- RECOVERY TIMELINE -->
+                <div class="info-section" style="background: linear-gradient(135deg, #27ae60 0%, #229954 100%); padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 2px solid #2ecc71;">
+                    <h3 style="margin: 0 0 10px 0; color: white;">
+                        🌱 Post-Impact Recovery Timeline
+                        ${window.createInfoButton('Source', 'Jablonski (1995) Extinctions in the fossil record; Erwin (1998) The end and the beginning')}
+                    </h3>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; font-size: 0.85em;">
+                        <div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 5px; border-left: 3px solid #e74c3c;">
+                            <b style="color: white;">Years 0-10:</b><br>
+                            <span style="color: #ddd;">
+                            ${extinction_probability > 70 ? 
+                                `Impact winter active. ${temp_drop.toFixed(0)}°C cooling. Mass starvation. ${extinction_probability}% species die.` :
+                            extinction_probability > 30 ?
+                                `Regional devastation. Climate disrupted. Major extinctions begin.` :
+                                `Local damage. Ecosystem stress. Limited global impact.`
+                            }
+                            </span>
+                        </div>
+                        <div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 5px; border-left: 3px solid #e67e22;">
+                            <b style="color: white;">Years 10-100:</b><br>
+                            <span style="color: #ddd;">
+                            ${extinction_probability > 70 ?
+                                `Dust settles. Greenhouse warming begins. Acid oceans. No megafauna survive.` :
+                            extinction_probability > 30 ?
+                                `Survivors adapt. Food webs rebuild slowly. Climate stabilizing.` :
+                                `Rapid recovery. Ecosystems mostly restored.`
+                            }
+                            </span>
+                        </div>
+                        <div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 5px; border-left: 3px solid #f39c12;">
+                            <b style="color: white;">Years 100-1,000:</b><br>
+                            <span style="color: #ddd;">
+                            ${extinction_probability > 70 ?
+                                `Climate normalized. Surviving lineages radiate. New dominant species emerge.` :
+                            extinction_probability > 30 ?
+                                `Biodiversity rebounds. Ecosystems stable. Crater visible landmark.` :
+                                `Full ecological recovery. Only geology remembers.`
+                            }
+                            </span>
+                        </div>
+                        <div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 5px; border-left: 3px solid #f1c40f;">
+                            <b style="color: white;">1,000-10,000 years:</b><br>
+                            <span style="color: #ddd;">
+                            ${extinction_probability > 70 ?
+                                `Evolutionary innovations. Forests regrow. New apex predators. Biodiversity 30% of pre-impact.` :
+                            extinction_probability > 30 ?
+                                `Near-complete recovery. Crater eroding. Human myths tell of "the great fire from sky".` :
+                                `Impact crater a tourist site. Local geology altered permanently.`
+                            }
+                            </span>
+                        </div>
+                        <div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 5px; border-left: 3px solid #52be80;">
+                            <b style="color: white;">10,000 years - 1 Mya:</b><br>
+                            <span style="color: #ddd;">
+                            ${extinction_probability > 70 ?
+                                `New dominant groups established. Climate fully normalized. Biodiversity 60% restored.` :
+                            extinction_probability > 30 ?
+                                `Complete ecological recovery. Crater barely visible.` :
+                                `Only sediment layers record the impact.`
+                            }
+                            </span>
+                        </div>
+                        <div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 5px; border-left: 3px solid #27ae60;">
+                            <b style="color: white;">1-10 Million years:</b><br>
+                            <span style="color: #ddd;">
+                            ${extinction_probability > 70 ?
+                                `Biodiversity equals or exceeds pre-impact. Iridium layer marks the event in rock record.` :
+                            extinction_probability > 30 ?
+                                `Impact layer visible in stratigraphy. Future geologists study it.` :
+                                `Geological footnote. Minor anomaly in fossil record.`
+                            }
+                            </span>
+                        </div>
+                    </div>
+                    ${extinction_probability > 50 ? `
+                        <div style="margin-top: 15px; padding: 12px; background: rgba(0,0,0,0.4); border-radius: 6px; border-left: 3px solid #27ae60;">
+                            <b style="color: #2ecc71;">🔬 Recovery Science:</b><br>
+                            <span style="color: #ddd; font-size: 0.9em;">
+                            After the K-Pg extinction, mammals evolved from small shrews to elephants and whales in just 10 million years.
+                            Empty niches drive rapid evolution. Small, adaptable species inherit the Earth. The "disaster taxa" 
+                            (ferns, fungi, algae) dominate initially, then complex ecosystems rebuild from the bottom up.
+                            </span>
+                        </div>
+                    ` : ''}
+                </div>
 
-    <!-- SCIENTIFIC REFERENCES -->
-    <div class="info-section" style="background: #16213e; padding: 15px; border-radius: 8px; border: 2px solid #6c5ce7;">
-        <h3 style="margin: 0 0 10px 0; color: #6c5ce7;">📚 Scientific Sources & Methodology</h3>
-        <div style="color: #aaa; font-size: 0.85em; line-height: 1.8;">
-            <b style="color: #00d4ff;">Key References:</b>
-            <ul style="margin: 5px 0; padding-left: 20px;">
-                <li><b>Crater Scaling:</b> Holsapple, K.A. (1993) "The scaling of impact processes in planetary sciences" <i>Annual Review Earth Planet. Sci.</i> 21:333-373</li>
-                <li><b>Impact Effects:</b> Collins, G.S., Melosh, H.J., Marcus, R.A. (2005) "Earth Impact Effects Program" <i>Meteoritics & Planetary Science</i> 40:817-840</li>
-                <li><b>Climate Effects:</b> Toon, O.B., et al. (1997) "Environmental perturbations caused by the impacts of asteroids and comets" <i>Reviews of Geophysics</i> 35:41-78</li>
-                <li><b>Impact Winter:</b> Covey, C., et al. (1994) "Global climatic effects of atmospheric dust from an asteroid or comet impact" <i>Global and Planetary Change</i> 9:263-273</li>
-                <li><b>Wildfires:</b> Melosh, H.J., et al. (1990) "Ignition of global wildfires at the Cretaceous/Tertiary boundary" <i>Nature</i> 343:251-254</li>
-                <li><b>Mass Extinction:</b> Alvarez, L.W., et al. (1980) "Extraterrestrial cause for the Cretaceous-Tertiary extinction" <i>Science</i> 208:1095-1108</li>
-                <li><b>Chicxulub Impact:</b> Schulte, P., et al. (2010) "The Chicxulub asteroid impact and mass extinction at the K-Pg boundary" <i>Science</i> 327:1214-1218</li>
-                <li><b>Orbital Mechanics:</b> Korycansky, D.G., Laughlin, G., Adams, F.C. (2001) "Astronomical engineering: a strategy for modifying planetary orbits" <i>Astrophysics & Space Science</i> 275:349-366</li>
-            </ul>
-            <br>
-            <b style="color: #00d4ff;">Calculation Methods:</b>
-            <ul style="margin: 5px 0; padding-left: 20px;">
-                <li><b>Energy:</b> E = ½mv² (classical kinetic energy)</li>
-                <li><b>Crater diameter:</b> Holsapple π-scaling with gravity regime</li>
-                <li><b>Optical depth:</b> τ = κ × Σ (extinction coefficient × column density)</li>
-                <li><b>Temperature drop:</b> ΔT ∝ τ with saturation at 25°C</li>
-                <li><b>Momentum transfer:</b> Δv = (m_impact × v) / M_Earth</li>
-                <li><b>Angular momentum:</b> L = m × v × r (perpendicular impact assumption)</li>
-            </ul>
-            <br>
-            <b style="color: #00d4ff;">Assumptions & Uncertainties:</b>
-            <ul style="margin: 5px 0; padding-left: 20px;">
-                <li>Target rock density: 2,500 kg/m³ (continental crust average)</li>
-                <li>Vertical impact angle: ${angle}° from horizontal</li>
-                <li>Maximum angular momentum transfer assumed (perpendicular equatorial impact)</li>
-                <li>Dust particle size: 1 μm (optimal for light scattering)</li>
-                <li>No account for specific target geology (sediment vs. basement rock)</li>
-                <li>Climate models simplified - actual effects depend on impact location, season, ocean vs. land</li>
-                <li>Extinction probability based on fossil record correlation, not mechanistic modeling</li>
-            </ul>
-            <br>
-            <p style="margin: 0; padding: 10px; background: rgba(108,92,231,0.2); border-radius: 5px; border-left: 3px solid #6c5ce7;">
-                <b style="color: #6c5ce7;">⚠️ Scientific Note:</b> These calculations use peer-reviewed empirical scaling laws 
-                calibrated to nuclear weapons tests, laboratory impact experiments, and the geological/fossil record of 
-                real impact events. The Chicxulub impact (66 Mya) provides the best calibration for global effects. 
-                Uncertainties increase for impacts larger than Chicxulub as we enter regimes with no modern analogs.
-            </p>
-        </div>
-    </div>
-    `;
-}
+                <!-- SCIENTIFIC REFERENCES -->
+                <div class="info-section" style="background: #16213e; padding: 15px; border-radius: 8px; border: 2px solid #6c5ce7;">
+                    <h3 style="margin: 0 0 10px 0; color: #6c5ce7;">📚 Scientific Sources & Methodology</h3>
+                    <div style="color: #aaa; font-size: 0.85em; line-height: 1.8;">
+                        <b style="color: #00d4ff;">Key References:</b>
+                        <ul style="margin: 5px 0; padding-left: 20px;">
+                            <li><b>Crater Scaling:</b> Holsapple, K.A. (1993) "The scaling of impact processes in planetary sciences" <i>Annual Review Earth Planet. Sci.</i> 21:333-373</li>
+                            <li><b>Impact Effects:</b> Collins, G.S., Melosh, H.J., Marcus, R.A. (2005) "Earth Impact Effects Program" <i>Meteoritics & Planetary Science</i> 40:817-840</li>
+                            <li><b>Climate Effects:</b> Toon, O.B., et al. (1997) "Environmental perturbations caused by the impacts of asteroids and comets" <i>Reviews of Geophysics</i> 35:41-78</li>
+                            <li><b>Impact Winter:</b> Covey, C., et al. (1994) "Global climatic effects of atmospheric dust from an asteroid or comet impact" <i>Global and Planetary Change</i> 9:263-273</li>
+                            <li><b>Wildfires:</b> Melosh, H.J., et al. (1990) "Ignition of global wildfires at the Cretaceous/Tertiary boundary" <i>Nature</i> 343:251-254</li>
+                            <li><b>Mass Extinction:</b> Alvarez, L.W., et al. (1980) "Extraterrestrial cause for the Cretaceous-Tertiary extinction" <i>Science</i> 208:1095-1108</li>
+                            <li><b>Chicxulub Impact:</b> Schulte, P., et al. (2010) "The Chicxulub asteroid impact and mass extinction at the K-Pg boundary" <i>Science</i> 327:1214-1218</li>
+                            <li><b>Orbital Mechanics:</b> Korycansky, D.G., Laughlin, G., Adams, F.C. (2001) "Astronomical engineering: a strategy for modifying planetary orbits" <i>Astrophysics & Space Science</i> 275:349-366</li>
+                        </ul>
+                        <br>
+                        <b style="color: #00d4ff;">Calculation Methods:</b>
+                        <ul style="margin: 5px 0; padding-left: 20px;">
+                            <li><b>Energy:</b> E = ½mv² (classical kinetic energy)</li>
+                            <li><b>Crater diameter:</b> Holsapple π-scaling with gravity regime</li>
+                            <li><b>Optical depth:</b> τ = κ × Σ (extinction coefficient × column density)</li>
+                            <li><b>Temperature drop:</b> ΔT ∝ τ with saturation at 25°C</li>
+                            <li><b>Momentum transfer:</b> Δv = (m_impact × v) / M_Earth</li>
+                            <li><b>Angular momentum:</b> L = m × v × r (perpendicular impact assumption)</li>
+                        </ul>
+                        <br>
+                        <b style="color: #00d4ff;">Assumptions & Uncertainties:</b>
+                        <ul style="margin: 5px 0; padding-left: 20px;">
+                            <li>Target rock density: 2,500 kg/m³ (continental crust average)</li>
+                            <li>Vertical impact angle: ${angle}° from horizontal</li>
+                            <li>Maximum angular momentum transfer assumed (perpendicular equatorial impact)</li>
+                            <li>Dust particle size: 1 μm (optimal for light scattering)</li>
+                            <li>No account for specific target geology (sediment vs. basement rock)</li>
+                            <li>Climate models simplified - actual effects depend on impact location, season, ocean vs. land</li>
+                            <li>Extinction probability based on fossil record correlation, not mechanistic modeling</li>
+                        </ul>
+                        <br>
+                        <p style="margin: 0; padding: 10px; background: rgba(108,92,231,0.2); border-radius: 5px; border-left: 3px solid #6c5ce7;">
+                            <b style="color: #6c5ce7;">⚠️ Scientific Note:</b> These calculations use peer-reviewed empirical scaling laws 
+                            calibrated to nuclear weapons tests, laboratory impact experiments, and the geological/fossil record of 
+                            real impact events. The Chicxulub impact (66 Mya) provides the best calibration for global effects. 
+                            Uncertainties increase for impacts larger than Chicxulub as we enter regimes with no modern analogs.
+                        </p>
+                    </div>
+                </div>
+                `;
+            }
 async function initGlobalEffectsCharts() {
     if (!asteroidData) return;
     
-    // Constants
+    // Check if we should even show these charts
+    if (!willCauseGlobalEffects(asteroidData)) {
+        document.getElementById('globalRatiosChart').parentElement.innerHTML = 
+            '<p style="text-align: center; color: #aaa;">Charts not available - no global effects</p>';
+        document.getElementById('atmosphericEffectsChart').parentElement.innerHTML = '';
+        document.getElementById('extinctionTimelineChart').parentElement.innerHTML = '';
+        return;
+    }
+    
+    // Constants (FIXED)
     const EARTH_MASS = 5.972e24;
     const EARTH_ORBITAL_VELOCITY = 29780;
-    const EARTH_ANGULAR_MOMENTUM = 5.86e33;
-    const EARTH_RADIUS = 6371000;
+    const EARTH_ANGULAR_MOMENTUM = 7.08e33; // FIXED
+    const EARTH_RADIUS = 6.371e6; // in meters
     const EARTH_VOLUME = (4/3) * Math.PI * Math.pow(EARTH_RADIUS, 3);
     
     // Calculations
     const r_m = asteroidData.radius;
     const rho = asteroidData.density;
-    const v = asteroidData.velocity * 1000;
+    const v = asteroidData.velocity * 1000; // km/s to m/s
     const m = (4/3) * Math.PI * Math.pow(r_m, 3) * rho;
     const E_joules = 0.5 * m * v * v;
     const E_megatons = E_joules / 4.184e15;
@@ -5666,10 +5716,14 @@ async function initGlobalEffectsCharts() {
     const impact_angular_momentum = m * v * EARTH_RADIUS;
     const angular_momentum_ratio = impact_angular_momentum / EARTH_ANGULAR_MOMENTUM;
     
-    const transient_crater_diameter = 1.161 * Math.pow(r_m, 0.78) * Math.pow(v/1000, 0.44) * Math.pow(rho/2700, 0.36) * Math.pow(2.7, -0.22);
-    const transient_crater_depth = transient_crater_diameter / 3;
-    const transient_crater_volume = (1/3) * Math.PI * Math.pow(transient_crater_diameter * 1000 / 2, 2) * transient_crater_depth * 1000;
-    const volume_ratio = transient_crater_volume / EARTH_VOLUME;
+    // FIXED crater calculation:
+    const L = r_m * 2; // projectile diameter
+    const target_density = 2500; // kg/m³
+    const D_tr = 1.161 * Math.pow(L, 0.78) * Math.pow(v/1000, 0.44) * 
+                 Math.pow(rho/target_density, 0.36) * Math.pow(target_density/1000, -0.22) * 1000; // meters
+    const crater_depth = D_tr > 4000 ? D_tr / 10 : D_tr / 5;
+    const crater_volume = (1/3) * Math.PI * Math.pow(D_tr/2, 2) * crater_depth; // m³
+    const volume_ratio = crater_volume / EARTH_VOLUME;
     
     // Chart 1: Global Ratios Comparison
     new Chart(document.getElementById('globalRatiosChart').getContext('2d'), {
@@ -5895,14 +5949,7 @@ async function initGlobalEffectsCharts() {
     });
 }
 
-
-
-
 </script>
 
 </body>
 </html>
-<<<<<<< HEAD
-=======
-
->>>>>>> 171351f851c986b40cfa35bbe6499088337ce218
