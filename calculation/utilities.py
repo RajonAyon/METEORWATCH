@@ -52,7 +52,7 @@ download_all_files()
 
 def get_population_in_radius(lat, lon, radius_km):
     # Load raster
-    with rasterio.open(raster_path) as src:
+    with rasterio.open(tif_path) as src:
         point = Point(lon, lat)
 
         # Project to meters for accurate buffer
@@ -77,21 +77,6 @@ def get_population_in_radius(lat, lon, radius_km):
 
 
 
-def effective_ke(density, radius, velocity, angle):
-    mass = mass_from_density_radius(density, radius)
-    KE_total = 0.5 * mass * (velocity*1000)**2
-    angle_rad = math.radians(angle)
-    return KE_total * math.sin(angle_rad)
-
-def format_large_number(num):
-    if num >= 1_00_00_00_000:
-        return f"{num/1_00_00_00_000:.2f}B"
-    elif num >= 1_000_000:
-        return f"{num/1_000_000:.2f}M"
-    elif num >= 1_000:
-        return f"{num/1_000:.1f}K"
-    else:
-        return str(num)
 
 import geopandas as gpd
 from shapely.geometry import Point
