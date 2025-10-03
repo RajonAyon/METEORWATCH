@@ -8,12 +8,19 @@ import pyproj
 import math
 from rasterio.mask import mask # Correct import statement
 
-
-import os
-
-
-# Path to raster on the server
 raster_path = "data/ppp_2020_1km_Aggregated.tif"
+
+# Download from Google Drive if missing
+if not os.path.exists(raster_path):
+    print("Downloading dataset from Google Drive...")
+    os.makedirs("data", exist_ok=True)
+    url = "https://drive.google.com/uc?id=1wGJp2HlgmLNueAWEFP4VGNv1RvEaxFZK"
+    r = requests.get(url, stream=True)
+    with open(raster_path, "wb") as f:
+        for chunk in r.iter_content(chunk_size=8192):
+            f.write(chunk)
+    print("Download complete!")
+
 
 
 
