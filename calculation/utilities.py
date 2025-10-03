@@ -8,7 +8,8 @@ import pyproj
 import math
 from rasterio.mask import mask # Correct import statement
 
-import gdown
+import os
+import urllib.request
 
 # -------------------------------
 # File paths
@@ -18,32 +19,33 @@ pha_json_path = "static/js/pha_positions_async.json"
 planet_json_path = "static/js/planet_positions_2025_2100.json"
 
 # -------------------------------
-# Google Drive file IDs
+# Dropbox direct download URLs
 # -------------------------------
-tif_id = "1wGJp2HlgmLNueAWEFP4VGNv1RvEaxFZK"
-pha_id = "1tiGxzxLO95ZN3wjhT7h6Buo4EIRbUPtx"
-planet_id = "181nkB6yWPF3MV9hG-UFQ9URVIW0voLfg"
+tif_url = "https://www.dropbox.com/scl/fi/zkesvwoui2z1xsqe33yc5/ppp_2020_1km_Aggregated.tif?rlkey=l9nr942fymcftbllmktpyaro2&st=59bsdynt&dl=1"
+pha_url = "https://www.dropbox.com/scl/fi/dwiegpor9om0isd7toyou/pha_positions_async.json?rlkey=9iu1kaptrculv86vlpyd2xsqd&st=w1ykciok&dl=1"
+planet_url = "https://www.dropbox.com/scl/fi/y37cqdlom7svt6m24qg4p/planet_positions_2025_2100.json?rlkey=czvi9j9jketvy7z3f80kn74p5&st=86m21yat&dl=1"
 
 # -------------------------------
-# Helper function to download files via gdown
+# Download function
 # -------------------------------
-def download_file(file_id, path):
+def download_file(url, path):
     if not os.path.exists(path):
-        print(f"Downloading {path} from Google Drive...")
+        print(f"Downloading {path}...")
         os.makedirs(os.path.dirname(path), exist_ok=True)
-        url = f"https://drive.google.com/uc?id={file_id}"
-        gdown.download(url, path, quiet=False)
-        print(f"Download complete: {path}")
+        urllib.request.urlretrieve(url, path)
+        print(f"✓ Downloaded: {path}")
+    else:
+        print(f"✓ File already exists: {path}")
 
 # -------------------------------
-# Download all necessary files
+# Download all files
 # -------------------------------
 def download_all_files():
-    download_file(tif_id, tif_path)
-    download_file(pha_id, pha_json_path)
-    download_file(planet_id, planet_json_path)
+    download_file(tif_url, tif_path)
+    download_file(pha_url, pha_json_path)
+    download_file(planet_url, planet_json_path)
 
-# Run immediately when imported
+# Run on startup
 download_all_files()
 
 
