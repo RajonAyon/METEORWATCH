@@ -731,19 +731,16 @@ function updateCloseApproachDisplay(approach, totalApproaches) {
 // =======================
 function showAsteroidInfoTab(asteroid) {
   if (!asteroid) return;
-
   function formatTwoDecimals(val) {
     const num = Number(val);
     return isNaN(num) ? "N/A" : num.toFixed(2);
   }
-
   let panel = document.getElementById("asteroidLeftTab");
   if (!panel) {
     panel = document.createElement("div");
     panel.id = "asteroidLeftTab";
     panel.className = "ui-panel";
     document.body.appendChild(panel);
-
     Object.assign(panel.style, {
       position: "fixed",
       right: "20px",
@@ -752,14 +749,12 @@ function showAsteroidInfoTab(asteroid) {
       padding: "20px",
       zIndex: "999"
     });
-
     const header = document.createElement("div");
     header.className = "header-text";
     header.innerText = "ℹ️ Asteroid Info";
     header.style.fontSize = "16px";
     header.style.marginBottom = "15px";
     panel.appendChild(header);
-
     const content = document.createElement("div");
     content.id = "asteroidTabContent";
     content.className = "info-card";
@@ -768,7 +763,6 @@ function showAsteroidInfoTab(asteroid) {
       transition: "opacity 0.3s ease"
     });
     panel.appendChild(content);
-
     const btnContainer = document.createElement("div");
     Object.assign(btnContainer.style, {
       display: "flex",
@@ -777,19 +771,34 @@ function showAsteroidInfoTab(asteroid) {
       gap: "10px"
     });
     panel.appendChild(btnContainer);
-
     const prevBtn = document.createElement("button");
     prevBtn.className = "control-btn";
     prevBtn.innerText = "◀ Previous";
     prevBtn.style.flex = "1";
     btnContainer.appendChild(prevBtn);
-
     const nextBtn = document.createElement("button");
     nextBtn.className = "control-btn";
     nextBtn.innerText = "Next ▶";
     nextBtn.style.flex = "1";
     btnContainer.appendChild(nextBtn);
   }
+  
+  const explanations = {
+    "💎 Avg Diameter (m)": "The average width of the asteroid measured in meters. Calculated from brightness observations.",
+    "⚖️ Density (kg/m³)": "The assumed mass per unit volume. Most asteroids have densities between 2000-3000 kg/m³.",
+    "⚡ Avg Velocity (km/s)": "The average speed relative to Earth during close approaches, measured in kilometers per second.",
+    "🔭 First Observed": "The date when this asteroid was first detected and recorded by astronomers.",
+    "📅 Last Observed": "The most recent date when this asteroid was observed and tracked.",
+    "🎯 Orbit Uncertainty": "A measure of how precisely we know the orbit (0-9 scale). Lower numbers mean more accurate predictions.",
+    "🌀 Eccentricity": "How oval-shaped the orbit is. 0 = perfect circle, closer to 1 = more elongated ellipse.",
+    "📐 Semi-Major Axis (AU)": "Half the longest diameter of the orbital ellipse. 1 AU = Earth-Sun distance (150 million km).",
+    "🛸 Inclination (°)": "The tilt of the orbit relative to Earth's orbital plane, measured in degrees.",
+    "🔻 Perihelion Dist (AU)": "The closest distance the asteroid gets to the Sun during its orbit.",
+    "🔺 Aphelion Dist (AU)": "The farthest distance the asteroid gets from the Sun during its orbit.",
+    "🌑 Mean Anomaly (°)": "The asteroid's position along its orbit at a specific time, expressed as an angle.",
+    "🔄 Mean Motion (°/day)": "How many degrees the asteroid travels along its orbit per day. Higher = faster orbit.",
+    "⚠️ Hazardous": "Classified as potentially hazardous due to size and close approach distance to Earth."
+  };
 
   const keys = [
     ["💎 Avg Diameter (m)", formatTwoDecimals(asteroid.avg_diameter_m)],
@@ -807,31 +816,83 @@ function showAsteroidInfoTab(asteroid) {
     ["🔄 Mean Motion (°/day)", formatTwoDecimals(asteroid.orbital_data.mean_motion)],
     ["⚠️ Hazardous", "Yes"]
   ];
-
   let currentIndex = 0;
   const content = document.getElementById("asteroidTabContent");
   const prevBtn = panel.querySelector("button:first-of-type");
   const nextBtn = panel.querySelector("button:last-of-type");
-
+  
+  // Create info button
+  const infoBtn = document.createElement("button");
+  infoBtn.innerHTML = "ℹ️";
+  infoBtn.className = "control-btn";
+  Object.assign(infoBtn.style, {
+    position: "absolute",
+    top: "15px",
+    right: "15px",
+    width: "30px",
+    height: "30px",
+    padding: "0",
+    fontSize: "16px",
+    borderRadius: "50%",
+    cursor: "pointer"
+  });
+  
+  // Create explanation tooltip
+  const tooltip = document.createElement("div");
+  tooltip.id = "asteroidTooltip";
+  Object.assign(tooltip.style, {
+    position: "absolute",
+    bottom: "110%",
+    right: "0",
+    width: "280px",
+    padding: "12px",
+    backgroundColor: "rgba(20, 20, 40, 0.98)",
+    border: "1px solid rgba(102, 126, 234, 0.3)",
+    borderRadius: "8px",
+    fontSize: "13px",
+    lineHeight: "1.5",
+    color: "#e0e0e0",
+    display: "none",
+    zIndex: "1000",
+    boxShadow: "0 4px 12px rgba(0,0,0,0.3)"
+  });
+  
+  infoBtn.appendChild(tooltip);
+  panel.appendChild(infoBtn);
+  
+  let tooltipVisible = false;
+  
+  infoBtn.onclick = (e) => {
+    e.stopPropagation();
+    tooltipVisible = !tooltipVisible;
+    tooltip.style.display = tooltipVisible ? "block" : "none";
+    updateTooltip();
+  };
+  
+  function updateTooltip() {
+    const [label] = keys[currentIndex];
+    tooltip.textContent = explanations[label] || "No explanation available.";
+  }
+  
   function updateContent() {
     const [label, value] = keys[currentIndex];
     content.style.opacity = 0;
     setTimeout(() => {
       content.innerHTML = `<strong>${label}:</strong><br><span style="font-size: 16px; color: #667eea;">${value}</span>`;
       content.style.opacity = 1;
+      if (tooltipVisible) {
+        updateTooltip();
+      }
     }, 150);
   }
-
   prevBtn.onclick = () => {
     currentIndex = (currentIndex - 1 + keys.length) % keys.length;
     updateContent();
   };
-
   nextBtn.onclick = () => {
     currentIndex = (currentIndex + 1) % keys.length;
     updateContent();
   };
-
   currentIndex = 0;
   updateContent();
 }
