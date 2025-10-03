@@ -7,20 +7,6 @@ import geopandas as gpd
 from shapely.geometry import Point
 from calculation.utilities import *
 
-# Load the shapefile once
-land_gdf = gpd.read_file("data/ne_10m_land.shp")
-
-def is_land(lat, lon, land_gdf):
-    """
-    Check if a given latitude and longitude is on land.
-    
-    Returns 1 if land, 0 if water
-    """
-    lon = ((lon + 180) % 360) - 180  # wrap longitude
-    point = Point(lon, lat)
-    return 1 if any(land_gdf.contains(point)) else 0
-
-# Example usage
 
 
 
