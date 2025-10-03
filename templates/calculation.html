@@ -3519,7 +3519,7 @@ async function generateWaterContent() {
 
 
     // Check if impact is over water (simplified - you'd use actual ocean data)
-    const isOverWater = asteroidSession.is_tsunami;  // notice the underscore
+    const isOverWater = asteroidSession.is_tsunami; 
     
     if (!isOverWater) {
         const messageDiv = document.createElement("div");
@@ -3527,7 +3527,7 @@ async function generateWaterContent() {
         messageDiv.style.cssText = "position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: #2196F3; color: white; padding: 30px 40px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); text-align: center; z-index: 9999;";
         messageDiv.innerHTML = `
             <h2>🏜️ Land Impact</h2>
-            <p>The asteroid will impact on land.<br><b>Water effects analysis not applicable.</b></p>
+            <p><b>Water effects are only analyzable if the impact occurs within 100 km of a shoreline; otherwise, this is treated as a land-only scenario.</b></p>
             <button onclick="this.parentElement.remove()" style="margin-top: 15px; padding: 8px 15px; background: white; color: #2196F3; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;">Close</button>
         `;
         document.body.appendChild(messageDiv);
